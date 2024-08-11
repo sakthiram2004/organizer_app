@@ -37,8 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.6
   get: ^4.6.5
   phonenumber_input: ^0.0.3
-  image_picker: ^0.8.4+4
+  image_picker: ^1.1.2
   intl_phone_field: ^3.0.1
+  image_cropper: ^8.0.1
+  provider: ^6.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

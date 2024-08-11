@@ -24,13 +24,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _idCardImages = pickedFiles;
-      });
+    final List<XFile> pickedFiles = await picker.pickMultiImage();
+    setState(() {
+      _idCardImages = pickedFiles;
+    });
     }
-  }
 
   Future<void> _pickFile() async {
     final ImagePicker picker = ImagePicker();
@@ -94,12 +92,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -116,12 +114,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -138,12 +136,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -160,12 +158,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -181,12 +179,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                       initialCountryCode: 'IN', // Set initial country code
@@ -207,12 +205,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -229,12 +227,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -258,22 +256,22 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
                     ElevatedButton.icon(
                       onPressed: _pickFile,
-                      icon: Icon(Icons.attach_file),
-                      label: Text("Upload Document"),
+                      icon: const Icon(Icons.attach_file),
+                      label: const Text("Upload Document"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF46BCC3),
+                        backgroundColor: const Color(0xFF46BCC3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -282,10 +280,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     SizedBox(height: screenHeight * 0.03),
                     ElevatedButton.icon(
                       onPressed: _pickImages,
-                      icon: Icon(Icons.image),
-                      label: Text("Upload ID Card Images"),
+                      icon: const Icon(Icons.image),
+                      label: const Text("Upload ID Card Images"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF46BCC3),
+                        backgroundColor: const Color(0xFF46BCC3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -300,7 +298,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           Get.toNamed(PageRoutes.signupscreen);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF46BCC3),
+                          backgroundColor: const Color(0xFF46BCC3),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),

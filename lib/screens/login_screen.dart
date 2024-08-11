@@ -69,12 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                       ),
                     ),
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -116,28 +116,28 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: screenHeight * 0.05),
               ElevatedButton(
                 onPressed: () {},
-                child: Text(
-                  "Login",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF46BCC3),
+                  backgroundColor: const Color(0xFF46BCC3),
                   minimumSize: Size(screenWidth * 0.6, screenHeight * 0.06),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
+                ),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
               SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Create new account "),
+                  const Text("Create new account "),
                   TextButton(
                       onPressed: () {
                         Get.toNamed(PageRoutes.signupscreen);
                       },
-                      child: Text(
+                      child: const Text(
                         "Sign up",
                         style: TextStyle(color: Color(0xFF46BCC3)),
                       )),
