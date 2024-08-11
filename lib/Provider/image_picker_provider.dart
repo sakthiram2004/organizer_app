@@ -4,29 +4,55 @@ import 'package:flutter/material.dart';
 import 'package:organizer_app/Utils/image_helper.dart';
 
 class ImagePickerProvider extends ChangeNotifier {
-  List<File> _imageList = [];
-  File? _image;
+  final List<File> _mainEventCoverImages = [];
+  final List<File> _subEventCoverImages = [];
+  File? _mainEventImage;
+  File? _profileImage;
 
   ImageHelper imageHelper = ImageHelper();
 
-  List<File> get imageList => _imageList;
-  File? get image => _image;
+  File? get mainEventImage => _mainEventImage;
+  File? get profileImage => _profileImage;
 
-  Future<void> pickImage() async {
+  List<File> get mainEventCoverImages => _mainEventCoverImages;
+  List<File> get subEventCoverImages  => _subEventCoverImages;
+
+  Future<void> pickProfileImage() async {
     final file = await imageHelper.pickImage();
     if (file.isNotEmpty) {
       final croppedFile = await imageHelper.crop(file: file.first!);
       if (croppedFile != null) {
-        _image = File(croppedFile.path);
+        _profileImage = File(croppedFile.path);
       }
     }
     notifyListeners();
   }
 
-  Future<void> pickMultipleImages() async {
-    final files = await imageHelper.pickImage(multiple: true);
-    if (files.isNotEmpty) {
-      _imageList = files.map((file) => File(file!.path)).toList();
+  Future<void> pickMainEventImage() async {
+    final file = await imageHelper.pickImage();
+    if(file.isNotEmpty){
+          _mainEventImage = File(file.first!.path);
+    }
+    notifyListeners();
+  }
+
+  Future<void> pickCoverImage({bool isMainEventCoverImages =  true}) async {
+    final file = await imageHelper.pickImage();
+    if (file.isNotEmpty) {
+      if (isMainEventCoverImages) {
+        _mainEventCoverImages.add(File(file.first!.path));
+      } else {
+        _subEventCoverImages.add(File(file.first!.path));
+      }
+    }
+    notifyListeners();
+  }
+
+  void removeCoverImage(int index , {bool deleteMainEventCoverImage = true} ){
+    if(deleteMainEventCoverImage){
+      mainEventCoverImages.removeAt(index);
+    }else{
+      subEventCoverImages.removeAt(index);
     }
     notifyListeners();
   }

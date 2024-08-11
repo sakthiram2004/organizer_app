@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       create: (_) => ImagePickerProvider(),
       child: GetMaterialApp(
         // home: LoginScreen(),
-        initialRoute: "/subEvent",
+        initialRoute: "/createEvent",
         getPages: PageRoutes.routes,
       ),
     );

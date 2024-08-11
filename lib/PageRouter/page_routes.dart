@@ -16,6 +16,7 @@ class PageRoutes extends GetConnect {
     GetPage(name: loginscreen, page: () => const LoginScreen()),
     GetPage(name: signupscreen, page: () => const SignupScreen()),
     GetPage(name: dummy, page: () => const Dummy()),
+    GetPage(name: createEvent, page: ()=> const CreateEvent()),
     GetPage(name: subEvent, page: () => const SubEventScreen()),
   ];
 }
