@@ -99,7 +99,6 @@ class _CreateEventState extends State<CreateEvent> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final imagePickerProvider = Provider.of<ImagePickerProvider>(context);
@@ -147,7 +146,7 @@ class _CreateEventState extends State<CreateEvent> {
           controller: nameController,
           decoration: const InputDecoration(labelText: 'Event Name'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter event name' : null,
+              value!.isEmpty ? 'Please enter event name' : null,
         ),
         TextFormField(
           controller: locationController,
@@ -192,7 +191,7 @@ class _CreateEventState extends State<CreateEvent> {
           controller: audienceTypeController,
           decoration: const InputDecoration(labelText: 'Audience Type'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter audience type' : null,
+              value!.isEmpty ? 'Please enter audience type' : null,
         ),
         CheckboxListTile(
           title: const Text('Allow Multi Tickets'),
@@ -211,9 +210,9 @@ class _CreateEventState extends State<CreateEvent> {
         TextFormField(
           initialValue: tags.join(', '),
           decoration:
-          const InputDecoration(labelText: 'Tags (comma separated)'),
+              const InputDecoration(labelText: 'Tags (comma separated)'),
           onChanged: (value) =>
-          tags = value.split(',').map((tag) => tag.trim()).toList(),
+              tags = value.split(',').map((tag) => tag.trim()).toList(),
         ),
       ],
     );
@@ -234,7 +233,7 @@ class _CreateEventState extends State<CreateEvent> {
           readOnly: true,
           onTap: () => _selectDate(context, 0, isStartDate: true),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter start date' : null,
+              value!.isEmpty ? 'Please enter start date' : null,
         ),
         TextFormField(
           controller: regEndDateController,
@@ -266,7 +265,7 @@ class _CreateEventState extends State<CreateEvent> {
           controller: longitudeController,
           decoration: const InputDecoration(labelText: 'Longitude'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter longitude' : null,
+              value!.isEmpty ? 'Please enter longitude' : null,
           keyboardType: TextInputType.number,
         ),
       ],
@@ -320,8 +319,8 @@ class _CreateEventState extends State<CreateEvent> {
                   right: 0,
                   child: IconButton(
                     icon: const Icon(Icons.remove_circle, color: Colors.red),
-                    onPressed: () =>
-                        provider.removeCoverImage(provider.mainEventCoverImages.indexOf(image)),
+                    onPressed: () => provider.removeCoverImage(
+                        provider.mainEventCoverImages.indexOf(image)),
                   ),
                 ),
               ],
@@ -359,7 +358,7 @@ class _CreateEventState extends State<CreateEvent> {
                       fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                _buildSubEventFields(index , provider),
+                _buildSubEventFields(index, provider),
                 const SizedBox(height: 16),
                 if (index == subEventControllers.length - 1)
                   Row(
@@ -384,7 +383,7 @@ class _CreateEventState extends State<CreateEvent> {
     );
   }
 
-  Widget _buildSubEventFields(int index , ImagePickerProvider provider) {
+  Widget _buildSubEventFields(int index, ImagePickerProvider provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -392,7 +391,7 @@ class _CreateEventState extends State<CreateEvent> {
           controller: subEventControllers[index]['name'],
           decoration: const InputDecoration(labelText: 'Sub Event Name'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter sub event name' : null,
+              value!.isEmpty ? 'Please enter sub event name' : null,
         ),
         TextFormField(
           controller: subEventControllers[index]['description'],
@@ -409,7 +408,7 @@ class _CreateEventState extends State<CreateEvent> {
           readOnly: true,
           onTap: () => _selectDate(context, index),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter start date' : null,
+              value!.isEmpty ? 'Please enter start date' : null,
         ),
         TextFormField(
           controller: subEventControllers[index]['start_time'],
@@ -417,7 +416,7 @@ class _CreateEventState extends State<CreateEvent> {
           readOnly: true,
           onTap: () => _selectTime(context, index, 'start_time'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter start time' : null,
+              value!.isEmpty ? 'Please enter start time' : null,
         ),
         TextFormField(
           controller: subEventControllers[index]['end_time'],
@@ -430,27 +429,27 @@ class _CreateEventState extends State<CreateEvent> {
           controller: subEventControllers[index]['host_name'],
           decoration: const InputDecoration(labelText: 'Host Name'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter host name' : null,
+              value!.isEmpty ? 'Please enter host name' : null,
         ),
         TextFormField(
           controller: subEventControllers[index]['country_code'],
           decoration: const InputDecoration(labelText: 'Country Code'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter country code' : null,
+              value!.isEmpty ? 'Please enter country code' : null,
           keyboardType: TextInputType.phone,
         ),
         TextFormField(
           controller: subEventControllers[index]['host_mobile'],
           decoration: const InputDecoration(labelText: 'Host Mobile'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter host mobile' : null,
+              value!.isEmpty ? 'Please enter host mobile' : null,
           keyboardType: TextInputType.phone,
         ),
         TextFormField(
           controller: subEventControllers[index]['host_email'],
           decoration: const InputDecoration(labelText: 'Host Email'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter host email' : null,
+              value!.isEmpty ? 'Please enter host email' : null,
           keyboardType: TextInputType.emailAddress,
         ),
         DropdownButtonFormField(
@@ -466,14 +465,14 @@ class _CreateEventState extends State<CreateEvent> {
           controller: subEventControllers[index]['ticket_price'],
           decoration: const InputDecoration(labelText: 'Ticket Price'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter ticket price' : null,
+              value!.isEmpty ? 'Please enter ticket price' : null,
           keyboardType: TextInputType.number,
         ),
         TextFormField(
           controller: subEventControllers[index]['ticket_qty'],
           decoration: const InputDecoration(labelText: 'Ticket Quantity'),
           validator: (value) =>
-          value!.isEmpty ? 'Please enter ticket quantity' : null,
+              value!.isEmpty ? 'Please enter ticket quantity' : null,
           keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 16),
@@ -496,8 +495,9 @@ class _CreateEventState extends State<CreateEvent> {
                   right: 0,
                   child: IconButton(
                     icon: const Icon(Icons.remove_circle, color: Colors.red),
-                    onPressed: () =>
-                        provider.removeCoverImage(provider.subEventCoverImages.indexOf(image) , deleteMainEventCoverImage: false),
+                    onPressed: () => provider.removeCoverImage(
+                        provider.subEventCoverImages.indexOf(image),
+                        deleteMainEventCoverImage: false),
                   ),
                 ),
               ],
@@ -505,7 +505,8 @@ class _CreateEventState extends State<CreateEvent> {
           }).toList(),
         ),
         ElevatedButton(
-          onPressed: () => provider.pickCoverImage(isMainEventCoverImages: false),
+          onPressed: () =>
+              provider.pickCoverImage(isMainEventCoverImages: false),
           child: const Text('Pick Cover Images'),
         ),
       ],
@@ -541,7 +542,9 @@ class _CreateEventState extends State<CreateEvent> {
                 "ticket_type": subEvent['ticket_type']!.text,
                 "ticket_price": double.parse(subEvent['ticket_price']!.text),
                 "ticket_qty": int.parse(subEvent['ticket_qty']!.text),
-                "sub-event-img": provider.subEventCoverImages.map((image) => image.path).toList()
+                "sub-event-img": provider.subEventCoverImages
+                    .map((image) => image.path)
+                    .toList()
               });
             }
 
@@ -559,7 +562,9 @@ class _CreateEventState extends State<CreateEvent> {
               "multi_tickets": multiTickets,
               "currency": currencyController.text,
               "main-img": provider.mainEventImage?.path ?? '',
-              "cover-img": provider.mainEventCoverImages.map((image) => image.path).toList(),
+              "cover-img": provider.mainEventCoverImages
+                  .map((image) => image.path)
+                  .toList(),
               "sub_events": subEvents,
             };
 
