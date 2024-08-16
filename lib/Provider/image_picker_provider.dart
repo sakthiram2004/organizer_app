@@ -17,6 +17,8 @@ class ImagePickerProvider extends ChangeNotifier {
   List<File> get mainEventCoverImages => _mainEventCoverImages;
   List<File> get subEventCoverImages  => _subEventCoverImages;
 
+  get imageFiles => null;
+
   Future<void> pickProfileImage() async {
     final file = await imageHelper.pickImage();
     if (file.isNotEmpty) {
