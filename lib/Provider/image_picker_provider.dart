@@ -5,7 +5,8 @@ import 'package:organizer_app/Utils/image_helper.dart';
 
 class ImagePickerProvider extends ChangeNotifier {
   final List<File> _mainEventCoverImages = [];
-  final List<File> _subEventCoverImages = [];
+  final List<List<File>> _subEventCoverImages = [[]];
+
   File? _mainEventImage;
   File? _profileImage;
 
@@ -15,7 +16,12 @@ class ImagePickerProvider extends ChangeNotifier {
   File? get profileImage => _profileImage;
 
   List<File> get mainEventCoverImages => _mainEventCoverImages;
-  List<File> get subEventCoverImages  => _subEventCoverImages;
+  List<List<File>> get subEventCoverImages  => _subEventCoverImages;
+
+  void setSubEventImageList(){
+    _subEventCoverImages.add([]);
+    notifyListeners();
+  }
 
   get imageFiles => null;
 
@@ -38,13 +44,13 @@ class ImagePickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pickCoverImage({bool isMainEventCoverImages =  true}) async {
+  Future<void> pickCoverImage(int index , {bool isMainEventCoverImages =  true}) async {
     final file = await imageHelper.pickImage();
     if (file.isNotEmpty) {
       if (isMainEventCoverImages) {
         _mainEventCoverImages.add(File(file.first!.path));
       } else {
-        _subEventCoverImages.add(File(file.first!.path));
+         _subEventCoverImages[index].add(File(file.first!.path));
       }
     }
     notifyListeners();
@@ -56,6 +62,10 @@ class ImagePickerProvider extends ChangeNotifier {
     }else{
       subEventCoverImages.removeAt(index);
     }
+    notifyListeners();
+  }
+  void removeMainImage(){
+    _mainEventImage = null;
     notifyListeners();
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:organizer_app/Utils/const_color.dart';
 import 'package:organizer_app/screens/CreateEvent/create_event.dart';
+import 'package:organizer_app/screens/Dashboard/dashboard_screen.dart';
 import 'package:organizer_app/screens/ListEvent/list_event.dart';
+import 'package:organizer_app/screens/Profile/profile_screen.dart';
+import 'package:organizer_app/screens/Search/search_screen.dart';
 import 'package:organizer_app/screens/bottom_nav.dart';
 import 'package:provider/provider.dart';
 
@@ -14,15 +16,12 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-List<Widget> pageList = const [
-  // DashboardScreen(),
-  // SearchScreen(),
-  Text('1'),
-  Text('2'),
+List<Widget> pageList =  [
+  DashboardScreen(),
+  SearchScreen(),
   CreateEvent(),
   ListEvent(),
-  Text('5'),
-  // ProfileScreen()
+  ProfileScreen()
 ];
 
 class _MainScreenState extends State<MainScreen> {
@@ -31,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     return Consumer<PageIndexProvider>(
       builder: (context, pageIndexController, child) {
         return Scaffold(
-          backgroundColor: tertiaryColor,
+          // backgroundColor: tertiaryColor,
           body: pageList[pageIndexController.selectedIndex],
           bottomNavigationBar: const BottomNav(),
         );
