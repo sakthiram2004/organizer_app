@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-
-import '../../Utils/height_width.dart';
+import 'package:organizer_app/Widget/event_details.dart';
 
 class TabView extends StatefulWidget {
   const TabView({super.key});
@@ -15,33 +14,30 @@ class _TabViewState extends State<TabView> {
   Widget build(BuildContext context) {
     double width = MediaQuery.sizeOf(context).width;
     return Padding(
-      padding: const EdgeInsets.only(top: 15,left: 10, right: 10),
+      padding: const EdgeInsets.only(top: 15, left: 10, right: 10),
       child: SingleChildScrollView(
         child: LayoutGrid(
-          columnSizes: width > 600
-              ? [1.fr, 1.fr, 1.fr]
-              : [1.fr, 1.fr],
+          columnSizes: width > 600 ? [1.fr, 1.fr, 1.fr] : [1.fr, 1.fr],
           rowSizes: List.generate(4, (_) => auto),
           columnGap: 12,
           rowGap: 8,
-          children: List.generate(8, (index) {
+          children: List.generate(6, (index) {
             return Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius
-                    .circular(10),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
                 children: [
                   Container(
                     height: 150,
                     decoration: const BoxDecoration(
-                      borderRadius:  BorderRadius.only(
+                      borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                       ),
                       image: DecorationImage(
-                        image:
-                        NetworkImage("https://tse2.mm.bing.net/th?id=OIP.cTL2SWZTmIRSnIU13VT-4AHaEa&pid=Api&P=0&h=180"),
+                        image: NetworkImage(
+                            "https://tse2.mm.bing.net/th?id=OIP.cTL2SWZTmIRSnIU13VT-4AHaEa&pid=Api&P=0&h=180"),
                         // AssetImage("assets/event1.jpg"),
                         fit: BoxFit.cover,
                       ),
@@ -61,7 +57,7 @@ class _TabViewState extends State<TabView> {
                       children: [
                         const Text(
                           "Music Event",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w800,
                             fontSize: 16,
@@ -70,15 +66,15 @@ class _TabViewState extends State<TabView> {
                         const SizedBox(height: 8),
                         const Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.date_range,
                               color: Colors.purple,
                               size: 18,
                             ),
-                             SizedBox(width: 5),
+                            SizedBox(width: 5),
                             Text(
                               "2024-08-17",
-                              style:  TextStyle(
+                              style: TextStyle(
                                 color: Colors.purple,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -97,7 +93,7 @@ class _TabViewState extends State<TabView> {
                             const SizedBox(width: 8),
                             const Text(
                               "New York",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -113,7 +109,11 @@ class _TabViewState extends State<TabView> {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  // Add functionality here
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const EventDetailsScreen()));
                                 },
                                 child: const Center(
                                   child: Text(

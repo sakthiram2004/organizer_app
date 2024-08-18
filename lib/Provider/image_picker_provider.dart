@@ -16,9 +16,9 @@ class ImagePickerProvider extends ChangeNotifier {
   File? get profileImage => _profileImage;
 
   List<File> get mainEventCoverImages => _mainEventCoverImages;
-  List<List<File>> get subEventCoverImages  => _subEventCoverImages;
+  List<List<File>> get subEventCoverImages => _subEventCoverImages;
 
-  void setSubEventImageList(){
+  void setSubEventImageList() {
     _subEventCoverImages.add([]);
     notifyListeners();
   }
@@ -38,33 +38,45 @@ class ImagePickerProvider extends ChangeNotifier {
 
   Future<void> pickMainEventImage() async {
     final file = await imageHelper.pickImage();
-    if(file.isNotEmpty){
-          _mainEventImage = File(file.first!.path);
+    if (file.isNotEmpty) {
+      _mainEventImage = File(file.first!.path);
     }
     notifyListeners();
   }
 
-  Future<void> pickCoverImage(int index , {bool isMainEventCoverImages =  true}) async {
+  Future<void> pickCoverImage(int index,
+      {bool isMainEventCoverImages = true}) async {
     final file = await imageHelper.pickImage();
     if (file.isNotEmpty) {
       if (isMainEventCoverImages) {
         _mainEventCoverImages.add(File(file.first!.path));
       } else {
-         _subEventCoverImages[index].add(File(file.first!.path));
+        _subEventCoverImages[index].add(File(file.first!.path));
       }
     }
     notifyListeners();
   }
 
-  void removeCoverImage(int index , {bool deleteMainEventCoverImage = true} ){
-    if(deleteMainEventCoverImage){
-      mainEventCoverImages.removeAt(index);
-    }else{
-      subEventCoverImages.removeAt(index);
+  void removeCoverImage(int subIndex, int index,
+      {bool deleteMainEventCoverImage = true}) {
+    try {
+      if (deleteMainEventCoverImage) {
+        if (index >= 0 && index < mainEventCoverImages.length) {
+          mainEventCoverImages.removeAt(index);
+          notifyListeners();
+        } else {
+          print('Error: Invalid index for mainEventCoverImages.');
+        }
+      } else {
+        subEventCoverImages[subIndex].removeAt(index);
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error removing cover image: $e');
     }
-    notifyListeners();
   }
-  void removeMainImage(){
+
+  void removeMainImage() {
     _mainEventImage = null;
     notifyListeners();
   }

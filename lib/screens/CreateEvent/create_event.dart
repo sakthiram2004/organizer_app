@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -108,7 +107,11 @@ class _CreateEventState extends State<CreateEvent> {
       backgroundColor: tertiaryColor,
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: const  Center(child: Text("Create Event", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+        title: const Center(
+            child: Text(
+          "Create Event",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        )),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -133,69 +136,70 @@ class _CreateEventState extends State<CreateEvent> {
 
   Widget _buildMainEventDetails(ImagePickerProvider imagePickerProvider) {
     return Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Main Event Details',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            _buildCurvedTextField(nameController, 'Event Name'),
+            _buildCurvedTextField(locationController, 'Location'),
+            _buildCurvedTextField(descriptionController, 'Description',
+                maxLines: 3),
+            _buildCurvedDropdown(categoryController, 'Category', [
+              'Symposium',
+              'Workshop',
+              'Conference',
+              'Seminar',
+              'Webinar',
+              'Hackathon',
+              'Meetup',
+              'Networking Event',
+              'Panel Discussion',
+              'Exhibition',
+              'Trade Show',
+              'Lecture',
+              'Round Table',
+              'Training Session',
+              'Bootcamp',
+              'Product Launch',
+              'Fundraiser',
+              'Award Ceremony',
+              'Cultural Event',
+              'Sports Event'
+            ]),
+            _buildCurvedTextField(audienceTypeController, 'Audience Type'),
+            CheckboxListTile(
+              title: const Text('Allow Multi Tickets'),
+              value: multiTickets,
+              onChanged: (value) => setState(() => multiTickets = value!),
+            ),
+            _buildCurvedDropdown(currencyController, 'Currency',
+                ['INR', 'USD', 'EUR', 'JPY', 'MXN']),
+            _buildCurvedTextField(
+              TextEditingController(text: tags.join(', ')),
+              'Tags (comma separated)',
+              onChanged: (value) =>
+                  tags = value.split(',').map((tag) => tag.trim()).toList(),
+            ),
+            const SizedBox(height: 16),
+            _buildRegistrationPeriod(),
+            const SizedBox(height: 16),
+            _buildEventLocation(),
+            const SizedBox(height: 16),
+            _buildImagePicker(imagePickerProvider),
+          ],
         ),
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        elevation: 4,
-        child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 15),
-         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Main Event Details',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        _buildCurvedTextField(nameController, 'Event Name'),
-        _buildCurvedTextField(locationController, 'Location'),
-        _buildCurvedTextField(descriptionController, 'Description',
-            maxLines: 3),
-        _buildCurvedDropdown(categoryController, 'Category', [
-          'Symposium',
-          'Workshop',
-          'Conference',
-          'Seminar',
-          'Webinar',
-          'Hackathon',
-          'Meetup',
-          'Networking Event',
-          'Panel Discussion',
-          'Exhibition',
-          'Trade Show',
-          'Lecture',
-          'Round Table',
-          'Training Session',
-          'Bootcamp',
-          'Product Launch',
-          'Fundraiser',
-          'Award Ceremony',
-          'Cultural Event',
-          'Sports Event'
-        ]),
-        _buildCurvedTextField(audienceTypeController, 'Audience Type'),
-        CheckboxListTile(
-          title: const Text('Allow Multi Tickets'),
-          value: multiTickets,
-          onChanged: (value) => setState(() => multiTickets = value!),
-        ),
-        _buildCurvedDropdown(currencyController, 'Currency',
-            ['INR', 'USD', 'EUR', 'JPY', 'MXN']),
-        _buildCurvedTextField(
-          TextEditingController(text: tags.join(', ')),
-          'Tags (comma separated)',
-          onChanged: (value) =>
-              tags = value.split(',').map((tag) => tag.trim()).toList(),
-        ),
-        const SizedBox(height: 16),
-        _buildRegistrationPeriod(),
-        const SizedBox(height: 16),
-        _buildEventLocation(),
-        const SizedBox(height: 16),
-        _buildImagePicker(imagePickerProvider),
-      ],
-    ),),
+      ),
     );
   }
 
@@ -252,29 +256,23 @@ class _CreateEventState extends State<CreateEvent> {
         const SizedBox(height: 8),
         // Display main image if picked
         if (provider.mainEventImage != null)
-    Stack(
-      children: [Container(
-      height: 150,
-      decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      border : Border.all(color: Colors.blueGrey , width: 1),
-        image: DecorationImage(
-          fit: BoxFit.cover,
-            image: FileImage(provider.mainEventImage!),
-      )
-      ),
-      ),
-
-        Positioned(
-          right: 0,
-          child: IconButton(
-            icon: const Icon(Icons.remove_circle,
-                color: Colors.red),
-            onPressed: () => provider.removeMainImage())
-        ),
-      ]
-    )
-
+          Stack(children: [
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blueGrey, width: 1),
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: FileImage(provider.mainEventImage!),
+                  )),
+            ),
+            Positioned(
+                right: 0,
+                child: IconButton(
+                    icon: const Icon(Icons.remove_circle, color: Colors.red),
+                    onPressed: () => provider.removeMainImage())),
+          ])
         else
           GestureDetector(
             onTap: () => provider.pickMainEventImage(),
@@ -282,7 +280,7 @@ class _CreateEventState extends State<CreateEvent> {
               height: 150,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border : Border.all(color: Colors.blueGrey , width: 1),
+                border: Border.all(color: Colors.blueGrey, width: 1),
               ),
               child: const Center(
                 child: Column(
@@ -290,12 +288,12 @@ class _CreateEventState extends State<CreateEvent> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(Icons.add, color: Colors.black38, size: 50),
-                Text(
-                  'Pick Main Image',
-                  style: TextStyle(
-                    color: Colors.black54,
-                  ),
-                )
+                    Text(
+                      'Pick Main Image',
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -305,38 +303,34 @@ class _CreateEventState extends State<CreateEvent> {
         // Display cover images if picked
         const Text('Cover Images'),
         const SizedBox(height: 8),
-        Wrap(
-                spacing: 10.0,
-                runSpacing: 10.0,
-                children:
-                [
-                  ...provider.mainEventCoverImages.map((image) {
-                  return Stack(
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border : Border.all(color: Colors.blueGrey , width: 1),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: FileImage(image),
-                            )
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        child: IconButton(
-                          icon: const Icon(Icons.remove_circle,
-                              color: Colors.red),
-                          onPressed: () => provider.removeCoverImage(
-                              provider.mainEventCoverImages.indexOf(image)),
-                        ),
-                      ),
-                    ],
-                  );
-                }),
+        Wrap(spacing: 10.0, runSpacing: 10.0, children: [
+          ...provider.mainEventCoverImages.map((image) {
+            return Stack(
+              children: [
+                Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blueGrey, width: 1),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: FileImage(image),
+                      )),
+                ),
+                Positioned(
+                  right: 0,
+                  child: IconButton(
+                    icon: const Icon(Icons.remove_circle, color: Colors.red),
+                    onPressed: () => provider.removeCoverImage(
+                      0,
+                      provider.mainEventCoverImages.indexOf(image),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
           GestureDetector(
             onTap: () => provider.pickCoverImage(0),
             child: Container(
@@ -344,7 +338,7 @@ class _CreateEventState extends State<CreateEvent> {
               width: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border : Border.all(color: Colors.blueGrey , width: 1),
+                border: Border.all(color: Colors.blueGrey, width: 1),
               ),
               child: const Center(
                 child: Column(
@@ -363,8 +357,7 @@ class _CreateEventState extends State<CreateEvent> {
               ),
             ),
           ),
-                ]
-        )
+        ])
       ],
     );
   }
@@ -373,132 +366,146 @@ class _CreateEventState extends State<CreateEvent> {
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Sub-events',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        ...List.generate(subEventControllers.length, (index) {
-          if (index >= 0 && index < subEventControllers.length) {
-            return Stack(
-                children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text(
+        'Sub-events',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 8),
+      ...List.generate(subEventControllers.length, (index) {
+        if (index >= 0 && index < subEventControllers.length) {
+          return Stack(children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              elevation: 4,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCurvedTextField(
+                        subEventControllers[index]['name']!, 'Sub-event Name'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['description']!,
+                        'Sub-event Description',
+                        maxLines: 3),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['video_url']!, 'Video URL'),
+                    _buildCurvedTextField(
+                      subEventControllers[index]['start_date']!,
+                      'Start Date',
+                      readOnly: true,
+                      onTap: () => _selectDate(context, index),
                     ),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 40),
-                      child: Column(
+                    _buildCurvedTextField(
+                      subEventControllers[index]['start_time']!,
+                      'Start Time',
+                      readOnly: true,
+                      onTap: () => _selectTime(context, index, 'start_time'),
+                    ),
+                    _buildCurvedTextField(
+                      subEventControllers[index]['end_time']!,
+                      'End Time',
+                      readOnly: true,
+                      onTap: () => _selectTime(context, index, 'end_time'),
+                    ),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['host_name']!, 'Host Name'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['country_code']!,
+                        'Country Code'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['host_mobile']!,
+                        'Host Mobile'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['host_email']!,
+                        'Host Email'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['ticket_type']!,
+                        'Ticket Type'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['ticket_price']!,
+                        'Ticket Price'),
+                    _buildCurvedTextField(
+                        subEventControllers[index]['ticket_qty']!,
+                        'Ticket Quantity'),
+                    Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildCurvedTextField(
-                              subEventControllers[index]['name']!, 'Sub-event Name'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['description']!,
-                              'Sub-event Description',
-                              maxLines: 3),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['video_url']!, 'Video URL'),
-                          _buildCurvedTextField(
-                            subEventControllers[index]['start_date']!,
-                            'Start Date',
-                            readOnly: true,
-                            onTap: () => _selectDate(context, index),
-                          ),
-                          _buildCurvedTextField(
-                            subEventControllers[index]['start_time']!,
-                            'Start Time',
-                            readOnly: true,
-                            onTap: () => _selectTime(context, index, 'start_time'),
-                          ),
-                          _buildCurvedTextField(
-                            subEventControllers[index]['end_time']!,
-                            'End Time',
-                            readOnly: true,
-                            onTap: () => _selectTime(context, index, 'end_time'),
-                          ),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['host_name']!, 'Host Name'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['country_code']!,
-                              'Country Code'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['host_mobile']!,
-                              'Host Mobile'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['host_email']!, 'Host Email'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['ticket_type']!,
-                              'Ticket Type'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['ticket_price']!,
-                              'Ticket Price'),
-                          _buildCurvedTextField(
-                              subEventControllers[index]['ticket_qty']!,
-                              'Ticket Quantity'),
-
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Display cover images if picked
-                                const Text('Cover Images'),
-                                const SizedBox(height: 8),
-                                (provider.subEventCoverImages[index].isNotEmpty)?   Wrap(
-                                    spacing: 10.0,
-                                    runSpacing: 10.0,
-                                    children:
-                                    [
-                                      ...provider.subEventCoverImages[index].map((image) {
-                                        return
-
-                                          Stack(
+                          // Display cover images if picked
+                          const Text('Cover Images'),
+                          const SizedBox(height: 8),
+                          (provider.subEventCoverImages[index].isNotEmpty)
+                              ? Wrap(
+                                  spacing: 10.0,
+                                  runSpacing: 10.0,
+                                  children: [
+                                      ...provider.subEventCoverImages[index]
+                                          .map((image) {
+                                        return Stack(
                                           children: [
                                             Container(
                                               height: 100,
                                               width: 100,
                                               decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  border : Border.all(color: Colors.blueGrey , width: 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                      color: Colors.blueGrey,
+                                                      width: 1),
                                                   image: DecorationImage(
                                                     fit: BoxFit.cover,
                                                     image: FileImage(image),
-                                                  )
-                                              ),
+                                                  )),
                                             ),
                                             Positioned(
                                               right: 0,
                                               child: IconButton(
-                                                icon: const Icon(Icons.remove_circle,
-                                                    color: Colors.red),
-                                                onPressed: () => provider.removeCoverImage(
-                                                  index,
-                                                    deleteMainEventCoverImage: false
-                                                ),
-                                              ),
+                                                  icon: const Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red),
+                                                  onPressed: () =>
+                                                      provider.removeCoverImage(
+                                                        index,
+                                                        provider
+                                                            .subEventCoverImages[
+                                                                index]
+                                                            .indexOf(image),
+                                                        deleteMainEventCoverImage:
+                                                            false,
+                                                      )),
                                             ),
                                           ],
                                         );
                                       }),
                                       GestureDetector(
-                                        onTap: () => provider.pickCoverImage(index ,isMainEventCoverImages: false),
+                                        onTap: () => provider.pickCoverImage(
+                                            index,
+                                            isMainEventCoverImages: false),
                                         child: Container(
                                           height: 100,
                                           width: 100,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(8),
-                                            border : Border.all(color: Colors.blueGrey , width: 1),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color: Colors.blueGrey,
+                                                width: 1),
                                           ),
                                           child: const Center(
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.add, color: Colors.black38, size: 25),
+                                                Icon(Icons.add,
+                                                    color: Colors.black38,
+                                                    size: 25),
                                                 Text(
                                                   'Pick Image',
                                                   style: TextStyle(
@@ -510,25 +517,27 @@ class _CreateEventState extends State<CreateEvent> {
                                           ),
                                         ),
                                       ),
-                                    ]
-                                ):
-
-
-                                GestureDetector(
-                                  onTap: () => provider.pickCoverImage(index ,isMainEventCoverImages: false),
+                                    ])
+                              : GestureDetector(
+                                  onTap: () => provider.pickCoverImage(index,
+                                      isMainEventCoverImages: false),
                                   child: Container(
                                     height: 100,
                                     width: 100,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      border : Border.all(color: Colors.blueGrey , width: 1),
+                                      border: Border.all(
+                                          color: Colors.blueGrey, width: 1),
                                     ),
                                     child: const Center(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Icon(Icons.add, color: Colors.black38, size: 25),
+                                          Icon(Icons.add,
+                                              color: Colors.black38, size: 25),
                                           Text(
                                             'Pick Image',
                                             style: TextStyle(
@@ -540,67 +549,56 @@ class _CreateEventState extends State<CreateEvent> {
                                     ),
                                   ),
                                 ),
-
-
-                              ]
-                          ),
-                        ],
-                      ),
-                    ),
-
-
-                  ),
-
-                  Positioned(
-                    right: 6,
-                    top: 6,
-                    child: SizedBox(
-                      height: 40,width: 40,
-                      child: IconButton(
-                          icon: const Icon(Icons.close_rounded,
-                              size: 25,
-                              color: Colors.red),
-                          onPressed: (){
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("sub event removed")),
-                            );
-                            setState(() {
-                              if (subEventControllers.isNotEmpty) {
-                                subEventControllers.removeAt(index);
-                              }
-                            });
-                          }
-
-                      ),
-                    ),
-                  ),
-                ]
-            );
-          }
-          return const SizedBox();
-
-        }),
-        ElevatedButton(
-          onPressed: (){
-            provider.setSubEventImageList();
-            _addSubEvent();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF46BCC3),
-            minimumSize: Size(screenWidth * 0.4, screenHeight * 0.07),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+                        ]),
+                  ],
+                ),
+              ),
             ),
-          ),
-          child: const Text(
-            'Add Sub-event ',
-            style: TextStyle(
-              color: Colors.white,
+            Positioned(
+              right: 6,
+              top: 6,
+              child: SizedBox(
+                height: 40,
+                width: 40,
+                child: IconButton(
+                    icon: const Icon(Icons.close_rounded,
+                        size: 25, color: Colors.red),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("sub event removed")),
+                      );
+                      setState(() {
+                        if (subEventControllers.isNotEmpty) {
+                          subEventControllers.removeAt(index);
+                        }
+                      });
+                    }),
+              ),
             ),
+          ]);
+        }
+        return const SizedBox();
+      }),
+      ElevatedButton(
+        onPressed: () {
+          provider.setSubEventImageList();
+          _addSubEvent();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF46BCC3),
+          minimumSize: Size(screenWidth * 0.4, screenHeight * 0.07),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
-    ]
-    );
+        child: const Text(
+          'Add Sub-event ',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ]);
   }
 
   Widget _buildCurvedTextField(
@@ -668,7 +666,6 @@ class _CreateEventState extends State<CreateEvent> {
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
             hintText: hint,
-
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -704,7 +701,7 @@ class _CreateEventState extends State<CreateEvent> {
           // Handle form submission
         }
       },
-        child: const Text(
+      child: const Text(
         'Submit',
         style: TextStyle(
           color: Colors.white,

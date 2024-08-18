@@ -6,12 +6,13 @@ import 'package:organizer_app/Provider/page_index_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_)=>ImagePickerProvider()),
-      ChangeNotifierProvider(create: (_)=>PageIndexProvider()),
-    ],child: const MyApp(),)
-  );
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ImagePickerProvider()),
+      ChangeNotifierProvider(create: (_) => PageIndexProvider()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

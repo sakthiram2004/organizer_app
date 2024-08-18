@@ -11,7 +11,8 @@ class ListEvent extends StatefulWidget {
   State<ListEvent> createState() => _ListEventState();
 }
 
-class _ListEventState extends State<ListEvent> with SingleTickerProviderStateMixin {
+class _ListEventState extends State<ListEvent>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -33,17 +34,18 @@ class _ListEventState extends State<ListEvent> with SingleTickerProviderStateMix
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.045,bottom: 10),
-            color: tertiaryColor,
+            padding: EdgeInsets.only(
+                top: MediaQuery.sizeOf(context).height * 0.045, bottom: 6),
+            color: primaryColor,
             child: TabBar(
               controller: _tabController,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: Colors.transparent,
               isScrollable: false,
-              labelColor: primaryColor,
+              labelColor: Colors.deepOrange,
               unselectedLabelColor: Colors.grey.withOpacity(0.4),
               dividerColor: Colors.transparent,
-              labelStyle: textStyle(20, Colors.black, FontWeight.bold),
+              labelStyle: textStyle(16, Colors.black, FontWeight.bold),
               tabs: const [
                 Tab(text: "Active"),
                 Tab(text: "Pending"),

@@ -17,11 +17,11 @@ class MainScreen extends StatefulWidget {
 }
 
 List<Widget> pageList =  [
-  DashboardScreen(),
-  SearchScreen(),
-  CreateEvent(),
-  ListEvent(),
-  ProfileScreen()
+  const DashboardScreen(),
+  const SearchScreen(),
+  const CreateEvent(),
+  const ListEvent(),
+  const ProfileScreen()
 ];
 
 class _MainScreenState extends State<MainScreen> {
