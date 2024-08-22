@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class BottomNavItem extends StatelessWidget {
-  const BottomNavItem({super.key, required this.onTap, required this.icon, this.color = Colors.white});
+  const BottomNavItem(
+      {super.key,
+      required this.onTap,
+      required this.icon,
+      this.color = Colors.white});
 
   final void Function()? onTap;
   final IconData? icon;
@@ -12,8 +16,8 @@ class BottomNavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        height: 36,
-        width: 36,
+        height: 40,
+        width: 40,
         child: Icon(
           icon,
           color: color,

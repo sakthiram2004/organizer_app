@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:organizer_app/screens/CreateEvent/create_event.dart';
-import 'package:organizer_app/screens/Dashboard/dashboard_screen.dart';
-import 'package:organizer_app/screens/ListEvent/list_event.dart';
-import 'package:organizer_app/screens/Profile/profile_screen.dart';
-import 'package:organizer_app/screens/Search/search_screen.dart';
-import 'package:organizer_app/screens/bottom_nav.dart';
+import 'package:organizer_app/Screens/CreateEvent/create_event.dart';
+import 'package:organizer_app/Screens/Dashboard/dashboard_screen.dart';
+import 'package:organizer_app/Screens/ListEvent/list_event.dart';
+import 'package:organizer_app/Screens/Profile/profile_screen.dart';
+import 'package:organizer_app/Screens/Search/search_screen.dart';
+import 'package:organizer_app/Screens/bottom_nav.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/page_index_provider.dart';
@@ -16,7 +16,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-List<Widget> pageList =  [
+List<Widget> pageList = [
   const DashboardScreen(),
   const SearchScreen(),
   const CreateEvent(),
@@ -30,7 +30,6 @@ class _MainScreenState extends State<MainScreen> {
     return Consumer<PageIndexProvider>(
       builder: (context, pageIndexController, child) {
         return Scaffold(
-          // backgroundColor: tertiaryColor,
           body: pageList[pageIndexController.selectedIndex],
           bottomNavigationBar: const BottomNav(),
         );

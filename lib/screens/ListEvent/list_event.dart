@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:organizer_app/Utils/const_color.dart';
 import 'package:organizer_app/Utils/height_width.dart';
-import 'package:organizer_app/screens/ListEvent/tab_view.dart';
+import 'package:organizer_app/Screens/ListEvent/tab_view.dart';
 import '../../Widget/text_style.dart';
 
 class ListEvent extends StatefulWidget {

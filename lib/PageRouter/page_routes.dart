@@ -2,17 +2,15 @@ import 'package:get/get_connect/connect.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:organizer_app/Widget/event_details.dart';
 import 'package:organizer_app/Widget/video_player.dart';
-import 'package:organizer_app/screens/CreateEvent/create_event.dart';
-import 'package:organizer_app/screens/bottom_nav.dart';
-import 'package:organizer_app/Auth/login_screen.dart';
-import 'package:organizer_app/screens/main_screen.dart';
-import 'package:organizer_app/Auth/signup_screen.dart';
-import 'package:video_player/video_player.dart';
+import 'package:organizer_app/Screens/CreateEvent/create_event.dart';
+import 'package:organizer_app/Screens/bottom_nav.dart';
+import 'package:organizer_app/Screens/Auth/login_screen.dart';
+import 'package:organizer_app/Screens/main_screen.dart';
+import 'package:organizer_app/Screens/Auth/signup_screen.dart';
 
 class PageRoutes extends GetConnect {
   static const String loginscreen = "/loginScreen";
   static const String signupscreen = "/signupScreen";
-  static const String dummy = "/dummy";
   static const String createEvent = "/createEvent";
   static const String subEvent = "/subEvent";
   static const String bottomNav = "/bottom_navigation";

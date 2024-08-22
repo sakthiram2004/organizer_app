@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:organizer_app/PageRouter/page_routes.dart';
+import 'package:organizer_app/Screens/Auth/login_screen.dart';
 import 'package:organizer_app/Widget/text_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Utils/const_color.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -10,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
@@ -18,6 +21,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isNameEditable = false;
   bool _isEmailEditable = false;
   bool _isContactEditable = false;
+
+  bool isUserVerified = true;
 
   final String _photoUrl =
       "https://tse3.mm.bing.net/th?id=OIP.9lp-AzhvWVzYdKMb9E8tLQHaHs&pid=Api&P=0&h=180";
@@ -31,6 +36,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "Profile",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          InkWell(
+            onTap: () async {
+              await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Are you want to logout?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "No",
+                        style: TextStyle(
+                          color: secondaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.remove("accessToken");
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                            (Route<dynamic> route) => false);
+                      },
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: const Row(
+              children: [
+                Text(
+                  "logOut",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  Icons.exit_to_app_outlined,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -44,6 +113,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     radius: 50,
                     backgroundImage: NetworkImage(_photoUrl),
                   ),
+                  isUserVerified
+                      ? const Icon(
+                          Icons.verified,
+                          color: Colors.green,
+                          size: 25,
+                        )
+                      : const SizedBox(),
                   Positioned(
                     bottom: 4,
                     right: 0,
@@ -87,46 +163,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildEditableField(
                 'Contact', _contactController, _isContactEditable),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _updateProfile,
-                  icon: const Icon(
-                    Icons.update,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    'Update Profile',
-                    style: textStyle(15, Colors.white, FontWeight.w500),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                  ),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: _updateProfile,
+                icon: const Icon(
+                  Icons.update,
+                  color: Colors.white,
                 ),
-                const SizedBox(width: 4),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // Navigate to the verification page
-                  },
-                  icon: const Icon(
-                    Icons.verified_user,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    'Verify Account',
-                    style: textStyle(15, Colors.white, FontWeight.w500),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                  ),
+                label: Text(
+                  'Update Profile',
+                  style: textStyle(15, Colors.white, FontWeight.w500),
                 ),
-              ],
-            )
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
           ],
         ),
       ),

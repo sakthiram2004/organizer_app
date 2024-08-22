@@ -33,7 +33,7 @@ class _BottomNavState extends State<BottomNav> {
                     onTap: () {
                       pageIndexController.setSelectedIndex = 0;
                     },
-                    color: Colors.deepOrange,
+                    color: const Color.fromARGB(255, 1, 26, 55),
                     icon: pageIndexController.selectedIndex == 0
                         ? Icons.dashboard
                         : Icons.dashboard_outlined),
@@ -41,13 +41,13 @@ class _BottomNavState extends State<BottomNav> {
                     onTap: () {
                       pageIndexController.setSelectedIndex = 1;
                     },
-                    color: Colors.deepOrange,
+                    color: const Color.fromARGB(255, 1, 26, 55),
                     icon: Icons.search),
                 BottomNavItem(
                     onTap: () {
                       pageIndexController.setSelectedIndex = 2;
                     },
-                    color: Colors.deepOrange,
+                    color: const Color.fromARGB(255, 1, 26, 55),
                     icon: pageIndexController.selectedIndex == 2
                         ? Icons.add_circle_outlined
                         : Icons.add),
@@ -55,7 +55,7 @@ class _BottomNavState extends State<BottomNav> {
                     onTap: () {
                       pageIndexController.setSelectedIndex = 3;
                     },
-                    color: Colors.deepOrange,
+                    color: const Color.fromARGB(255, 1, 26, 55),
                     icon: pageIndexController.selectedIndex == 3
                         ? Icons.analytics
                         : Icons.analytics_outlined),
@@ -63,7 +63,7 @@ class _BottomNavState extends State<BottomNav> {
                     onTap: () {
                       pageIndexController.setSelectedIndex = 4;
                     },
-                    color: Colors.deepOrange,
+                    color: const Color.fromARGB(255, 1, 26, 55),
                     icon: pageIndexController.selectedIndex == 4
                         ? Icons.person
                         : Icons.person_outlined),
