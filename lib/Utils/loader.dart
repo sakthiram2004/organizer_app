@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:organizer_app/Utils/scaffold_messenger.dart';
 import 'dart:async';
 import 'package:percent_indicator/percent_indicator.dart';
 

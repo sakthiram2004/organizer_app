@@ -4,7 +4,6 @@ import 'package:organizer_app/Provider/user_data_provider.dart';
 import 'package:organizer_app/Utils/const_color.dart';
 import 'package:organizer_app/CommonWidgets/text_style.dart';
 import 'package:organizer_app/Utils/format_data.dart';
-import 'package:organizer_app/Utils/not_found.dart';
 import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {

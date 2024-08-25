@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 String get baseUrl => 'http://192.168.142.148:3000/api/v1/';
 String get imageBaseUrl => 'http://192.168.142.148:3000/';

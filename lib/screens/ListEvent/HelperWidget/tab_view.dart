@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-import 'package:organizer_app/CommonWidgets/text_style.dart';
 import 'package:organizer_app/Helper/api_service.dart';
 import 'package:organizer_app/Model/event_data_model.dart';
 import 'package:organizer_app/Screens/ListEvent/HelperWidget/event_details.dart';
-import 'package:organizer_app/Utils/const_color.dart';
 import 'package:organizer_app/Utils/format_data.dart';
 import 'package:organizer_app/Utils/not_found.dart';
 
