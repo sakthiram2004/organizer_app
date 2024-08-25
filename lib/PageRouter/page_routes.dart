@@ -1,9 +1,5 @@
 import 'package:get/get_connect/connect.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:organizer_app/Widget/event_details.dart';
-import 'package:organizer_app/Widget/video_player.dart';
-import 'package:organizer_app/Screens/CreateEvent/create_event.dart';
-import 'package:organizer_app/Screens/bottom_nav.dart';
 import 'package:organizer_app/Screens/Auth/login_screen.dart';
 import 'package:organizer_app/Screens/main_screen.dart';
 import 'package:organizer_app/Screens/Auth/signup_screen.dart';
@@ -23,9 +19,6 @@ class PageRoutes extends GetConnect {
   static List<GetPage> routes = [
     GetPage(name: loginscreen, page: () => const LoginScreen()),
     GetPage(name: signupscreen, page: () => const SignupScreen()),
-    GetPage(name: createEvent, page: () => const CreateEvent()),
     GetPage(name: mainScreen, page: () => const MainScreen()),
-    GetPage(name: bottomNav, page: () => const BottomNav()),
-    GetPage(name: eventDetail, page: () => const EventDetailsScreen()),
   ];
 }

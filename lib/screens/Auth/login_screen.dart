@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:organizer_app/PageRouter/page_routes.dart';
 import 'package:organizer_app/Provider/auth_provider.dart';
+import 'package:organizer_app/Screens/main_screen.dart';
 import 'package:organizer_app/Utils/const_color.dart';
+import 'package:organizer_app/Utils/scaffold_messenger.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -20,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _loginFormKey = GlobalKey<FormState>();
 
-  void _togglePasswordVisibility(String field) {
+  void _togglePasswordVisibility() {
     setState(() {
       _showPassword = !_showPassword;
     });
@@ -35,17 +37,50 @@ class _LoginScreenState extends State<LoginScreen> {
     void handleLogin() async {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      await authProvider.login(
+      String message = await authProvider.login(
           _emailController.text.trim(), _passwordControler.text.trim());
-      if (authProvider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(authProvider.errorMessage.toString())));
+
+      final errorMessages = [
+        "internal server error",
+        "enter all details",
+        "user not found",
+        "invalid password",
+        "Login failed",
+        "Organizer not found"
+      ];
+
+      if (message == "login successfully") {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  content: Text(
+                    message,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.greenAccent,
+                  duration: const Duration(seconds: 1),
+                ),
+              )
+              .closed
+              .then((_) {
+            if (context.mounted) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const MainScreen()),
+                (Route<dynamic> route) => false,
+              );
+            }
+          });
+        } else if (errorMessages.contains(message)) {
+          if (context.mounted) {
+            showCustomSnackBar(context, message, isError: true);
+          }
+        }
       }
-      return null;
     }
 
     return Scaffold(
-      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -93,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          labelText: 'email',
+                          labelText: 'E-mail',
                           labelStyle: TextStyle(
                             color: Colors.black,
                             fontSize: screenWidth * 0.04,
@@ -158,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   : Icons.visibility,
                               color: Colors.black,
                             ),
-                            onPressed: () => _togglePasswordVisibility,
+                            onPressed: () => _togglePasswordVisibility(),
                           ),
                         ),
                       ),

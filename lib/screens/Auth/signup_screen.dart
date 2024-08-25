@@ -86,7 +86,6 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
@@ -117,15 +116,15 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.02, vertical: 10),
+                      horizontal: screenWidth * 0.02, vertical: 15),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.grey,
                         blurRadius: 10,
-                        offset: const Offset(0, 5),
+                        offset: Offset(0, 5),
                       ),
                     ],
                   ),
@@ -267,8 +266,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               _showPassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: Colors.black,
                             ),
                             onPressed: () =>
@@ -277,9 +276,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter password';
-                          } else if (value.length < 6) {
-                            return 'Password must be at least 6 characters long';
+                            return 'Please enter your password';
                           }
                           return null;
                         },
@@ -309,8 +306,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           suffixIcon: IconButton(
                             icon: Icon(
                               _showConfirmPassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: Colors.black,
                             ),
                             onPressed: () =>
@@ -319,9 +316,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter confirm password';
-                          } else if (value.length < 6) {
-                            return 'Password must be at least 6 characters long';
+                            return 'Please confirm your password';
                           } else if (value != _passwordController.text) {
                             return 'Passwords do not match';
                           }
@@ -332,46 +327,46 @@ class _SignupScreenState extends State<SignupScreen> {
                       DocumentPickerWidget(
                           filePickerProvider: filePickerProvider,
                           selectedFile: selectedFile),
-                      SizedBox(height: screenHeight * 0.03),
-                      ImagePickerWidget(filePickerProvider: filePickerProvider),
                       SizedBox(height: screenHeight * 0.02),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Already have an account?"),
-                          TextButton(
-                            onPressed: () {
-                              Get.toNamed(PageRoutes.loginscreen);
-                            },
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(color: Color(0xFF46BCC3)),
+                      ImagePickerWidget(filePickerProvider: filePickerProvider),
+                      SizedBox(height: screenHeight * 0.01),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 22),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text("Already have an account? "),
+                            TextButton(
+                              onPressed: () {
+                                Get.toNamed(PageRoutes.loginscreen);
+                              },
+                              child: const Text(
+                                "Log in",
+                                style: TextStyle(color: Color(0xFF46BCC3)),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: screenHeight * 0.06,
-                        child: ElevatedButton(
-                          onPressed: () => handleSubmit(filePickerProvider),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text(
-                            "Register",
-                            style: TextStyle(
-                              color: backgroundColor,
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: screenHeight * 0.02),
+                      SizedBox(height: screenHeight * 0.01),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF46BCC3),
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () => handleSubmit(filePickerProvider),
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                              fontSize: screenWidth * 0.05,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
                     ],
                   ),
                 ),

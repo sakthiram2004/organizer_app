@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:organizer_app/Provider/event_provider.dart';
+import 'package:organizer_app/Provider/user_data_provider.dart';
 import 'package:organizer_app/Utils/const_color.dart';
-import 'package:organizer_app/Widget/text_style.dart';
+import 'package:organizer_app/CommonWidgets/text_style.dart';
+import 'package:organizer_app/Utils/format_data.dart';
+import 'package:organizer_app/Utils/not_found.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -10,6 +15,14 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      Provider.of<EventProvider>(context, listen: false).getAllEvents();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,18 +38,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Greeting
-            const Text(
-              'Hello, Organizer!',
-              style: TextStyle(
+            Text(
+              "Hello, ${context.read<UserDataProvider>().userData.isEmpty ? 'Organizer!' : context.read<UserDataProvider>().userData.first.fullName}",
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
               ),
             ),
             const SizedBox(height: 10),
-
-            // Summary Cards
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -53,8 +63,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
             const SizedBox(height: 20),
-
-            // Events Overview
             const Text(
               'Events Overview',
               style: TextStyle(
@@ -64,41 +72,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildEventOverview(
-              eventName: "Music Concert",
-              date: "2024-09-15",
-              status: "Pending",
-              location: "New York",
-            ),
-            _buildEventOverview(
-              eventName: "Art Exhibition",
-              date: "2024-10-10",
-              status: "Active",
-              location: "Los Angeles",
-            ),
-            _buildEventOverview(
-              eventName: "Tech Conference",
-              date: "2024-11-20",
-              status: "Completed",
-              location: "San Francisco",
-            ),
-            _buildEventOverview(
-              eventName: "Music Concert",
-              date: "2024-09-15",
-              status: "Pending",
-              location: "New York",
-            ),
-            _buildEventOverview(
-              eventName: "Art Exhibition",
-              date: "2024-10-10",
-              status: "Active",
-              location: "Los Angeles",
-            ),
-            _buildEventOverview(
-              eventName: "Tech Conference",
-              date: "2024-11-20",
-              status: "Completed",
-              location: "San Francisco",
+            Consumer<EventProvider>(
+              builder: (context, eventDataProvider, child) {
+                final allEvents = eventDataProvider.allEvents;
+                if (allEvents.isNotEmpty) {
+                  return Column(
+                    children: List.generate(allEvents.length, (index) {
+                      final eventData = allEvents[index];
+                      return _buildEventOverview(
+                        eventName: eventData.mainEvent.name,
+                        date: formatTimeStamp(
+                            eventData.mainEvent.regStart.toString()),
+                        status: eventData.mainEvent.status,
+                        location: eventData.mainEvent.location,
+                      );
+                    }),
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
             ),
           ],
         ),
@@ -184,12 +177,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Color _getStatusColor(String status) {
     switch (status) {
-      case "Pending":
+      case "pending":
         return Colors.orange;
-      case "Active":
+      case "active":
         return Colors.blueAccent;
-      case "Completed":
+      case "completed":
         return Colors.green;
+      case "rejected":
+        return Colors.red;
       default:
         return Colors.grey;
     }

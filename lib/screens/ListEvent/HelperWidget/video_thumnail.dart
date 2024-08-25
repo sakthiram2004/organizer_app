@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:organizer_app/Widget/video_player.dart';
+import 'package:organizer_app/Model/event_data_model.dart';
+import 'package:organizer_app/Screens/ListEvent/HelperWidget/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoThumbnailPlayer extends StatelessWidget {
   final String videoUrl;
+  final EventDataModel eventData;
 
-  const VideoThumbnailPlayer({super.key, required this.videoUrl});
+  const VideoThumbnailPlayer(
+      {super.key, required this.videoUrl, required this.eventData});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +67,7 @@ class VideoThumbnailPlayer extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => YoutubeVideoPlayerWidget(
                     videoUrl: videoUrl,
+                    eventData: eventData,
                   ),
                 ),
               );

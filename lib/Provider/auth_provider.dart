@@ -30,7 +30,7 @@ class AuthProvider with ChangeNotifier {
 
     try {
       final request = http.MultipartRequest(
-          'POST', Uri.parse("${Config.baseUrl}$register"));
+          'POST', Uri.parse("$baseUrl${Config.register}"));
 
       if (fileData != null) {
         request.files
@@ -63,30 +63,29 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> login(String email, String password) async {
+  Future<String> login(String email, String password) async {
     isLoading = true;
-    errorMessage = null;
 
     try {
       final response = await http.post(
-        Uri.parse("${Config.baseUrl}$loginUser"),
+        Uri.parse("$baseUrl${Config.loginUser}"),
         body: jsonEncode({
           'email': email,
           'password': password,
         }),
         headers: {'Content-Type': 'application/json'},
       );
+      final responseJson = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        final responseJson = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', responseJson['accessToken']);
-        Get.offAll(PageRoutes.mainScreen);
+        return responseJson['message'];
       } else {
-        throw Exception('Failed to log in');
+        return responseJson["message"];
       }
     } catch (e) {
-      errorMessage = e.toString();
+      return 'Login failed';
     } finally {
       isLoading = false;
     }

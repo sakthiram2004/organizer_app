@@ -1,8 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:organizer_app/PageRouter/page_routes.dart';
+import 'package:organizer_app/Helper/api_service.dart';
+import 'package:organizer_app/Model/user_model.dart';
+import 'package:organizer_app/Provider/image_picker_provider.dart';
+import 'package:organizer_app/Provider/user_data_provider.dart';
 import 'package:organizer_app/Screens/Auth/login_screen.dart';
-import 'package:organizer_app/Widget/text_style.dart';
+import 'package:organizer_app/CommonWidgets/text_style.dart';
+import 'package:organizer_app/Screens/Profile/HelperWidget/custom_profile_image.dart';
+import 'package:organizer_app/Screens/Profile/HelperWidget/custom_text_filed.dart';
+import 'package:organizer_app/Screens/Profile/HelperWidget/profile_page_shimmer.dart';
+import 'package:organizer_app/Utils/scaffold_messenger.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Utils/const_color.dart';
 
@@ -14,18 +23,31 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _contactController = TextEditingController();
+  final Map<String, TextEditingController> _controllers = {
+    'name': TextEditingController(),
+    'email': TextEditingController(),
+    'contact': TextEditingController(),
+    'city': TextEditingController(),
+    'orgCode': TextEditingController(),
+    'orgName': TextEditingController(),
+  };
 
-  bool _isNameEditable = false;
-  bool _isEmailEditable = false;
-  bool _isContactEditable = false;
+  final Map<String, bool> _isEditable = {
+    'name': false,
+    'email': false,
+    'contact': false,
+    'city': false,
+    'orgCode': false,
+    'orgName': false,
+  };
 
-  bool isUserVerified = true;
-
-  final String _photoUrl =
-      "https://tse3.mm.bing.net/th?id=OIP.9lp-AzhvWVzYdKMb9E8tLQHaHs&pid=Api&P=0&h=180";
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserDataProvider>(context, listen: false).fetchUserData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,159 +60,180 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           InkWell(
-            onTap: () async {
-              await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text("Are you want to logout?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "No",
-                        style: TextStyle(
-                          color: secondaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.remove("accessToken");
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen()),
-                            (Route<dynamic> route) => false);
-                      },
-                      child: const Text(
-                        "Yes",
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+            onTap: () => _showLogoutDialog(context),
             child: const Row(
               children: [
                 Text(
-                  "logOut",
+                  "Logout",
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(
-                  Icons.exit_to_app_outlined,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
+                SizedBox(width: 5),
+                Icon(Icons.exit_to_app_outlined, color: Colors.white),
+                SizedBox(width: 5),
               ],
             ),
-          )
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(_photoUrl),
-                  ),
-                  isUserVerified
-                      ? const Icon(
-                          Icons.verified,
-                          color: Colors.green,
-                          size: 25,
-                        )
-                      : const SizedBox(),
-                  Positioned(
-                    bottom: 4,
-                    right: 0,
-                    child: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white.withOpacity(0.7),
-                      size: 25,
-                    ),
-                  ),
-                ],
-              ),
+      body: Consumer<UserDataProvider>(
+        builder: (context, userDataProvider, child) {
+          if (userDataProvider.userData.isEmpty) {
+            return const ProfilePageShimmer();
+          }
+
+          final user = userDataProvider.userData.first;
+
+          _initializeControllers(user);
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomeProfileImageWidget(
+                    photoUrl:
+                        "${imageBaseUrl}organizer_profile/${user.profile}",
+                    user: user),
+                const SizedBox(height: 20),
+                _buildReadOnlyField(
+                    "ID : ${user.orgId}", user.orgId.toString()),
+                const SizedBox(height: 10),
+                CustomTextFiled(
+                    controllers: _controllers,
+                    isEditable: _isEditable,
+                    onPressed: () {
+                      setState(() {
+                        _isEditable["name"] = !_isEditable["name"]!;
+                      });
+                    },
+                    label: "Name",
+                    labelKey: "name"),
+                const SizedBox(height: 10),
+                CustomTextFiled(
+                    controllers: _controllers,
+                    isEditable: _isEditable,
+                    onPressed: () {
+                      setState(() {
+                        _isEditable["email"] = !_isEditable["email"]!;
+                      });
+                    },
+                    label: "Email",
+                    labelKey: 'email'),
+                const SizedBox(height: 10),
+                CustomTextFiled(
+                    controllers: _controllers,
+                    isEditable: _isEditable,
+                    onPressed: () {
+                      setState(() {
+                        _isEditable["contact"] = !_isEditable["contact"]!;
+                      });
+                    },
+                    label: "Contact",
+                    labelKey: 'contact'),
+                const SizedBox(height: 10),
+                CustomTextFiled(
+                    controllers: _controllers,
+                    isEditable: _isEditable,
+                    onPressed: () {
+                      setState(() {
+                        _isEditable["email"] = !_isEditable["email"]!;
+                      });
+                    },
+                    label: "City",
+                    labelKey: 'city'),
+                const SizedBox(height: 10),
+                CustomTextFiled(
+                    controllers: _controllers,
+                    isEditable: _isEditable,
+                    onPressed: () {
+                      setState(() {
+                        _isEditable["orgCode"] = !_isEditable["orgCode"]!;
+                      });
+                    },
+                    label: "Organization Code",
+                    labelKey: "orgCode"),
+                const SizedBox(height: 10),
+                CustomTextFiled(
+                    controllers: _controllers,
+                    isEditable: _isEditable,
+                    onPressed: () {
+                      setState(() {
+                        _isEditable["orgName"] = !_isEditable["orgName"]!;
+                      });
+                    },
+                    label: "Organization Name",
+                    labelKey: "orgName"),
+                const SizedBox(height: 20),
+                _buildUpdateButton(),
+              ],
             ),
-            const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      enabled: false,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        labelText: 'ID',
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildEditableField('Name', _nameController, _isNameEditable),
-            const SizedBox(height: 10),
-            _buildEditableField('Email', _emailController, _isEmailEditable),
-            const SizedBox(height: 10),
-            _buildEditableField(
-                'Contact', _contactController, _isContactEditable),
-            const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: _updateProfile,
-                icon: const Icon(
-                  Icons.update,
-                  color: Colors.white,
-                ),
-                label: Text(
-                  'Update Profile',
-                  style: textStyle(15, Colors.white, FontWeight.w500),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                ),
-              ),
-            ),
-            const SizedBox(width: 4),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildEditableField(
-      String label, TextEditingController controller, bool isEditable,
-      {int maxLines = 1}) {
+  void _initializeControllers(UserModel user) {
+    _controllers['name']?.text = user.fullName;
+    _controllers['email']?.text = user.email;
+    _controllers['contact']?.text = '${user.countryCode} ${user.mobile}';
+    _controllers['city']?.text = user.location;
+    _controllers['orgCode']?.text = user.collegeCode;
+    _controllers['orgName']?.text = user.collegeName;
+  }
+
+  Future<void> _showLogoutDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Do you want to logout?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("No",
+                style: TextStyle(
+                    color: secondaryColor, fontWeight: FontWeight.bold)),
+          ),
+          TextButton(
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove("accessToken");
+              if (context.mounted) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "logout successfully",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Color.fromARGB(255, 235, 26, 61),
+                        duration: Duration(seconds: 1),
+                      ),
+                    )
+                    .closed
+                    .then((_) {
+                  if (context.mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                      (route) => false,
+                    );
+                  }
+                });
+              }
+            },
+            child: const Text("Yes",
+                style: TextStyle(
+                    color: primaryColor, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReadOnlyField(String label, String value) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
@@ -200,9 +243,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Expanded(
             child: TextField(
-              controller: controller,
-              enabled: isEditable,
-              maxLines: maxLines,
+              enabled: false,
+              maxLines: 1,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 labelText: label,
@@ -211,62 +253,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(
-              isEditable ? Icons.check : Icons.edit,
-              color: isEditable ? Colors.green : Colors.black54,
-            ),
-            onPressed: () async {
-              await _showEditConfirmationDialog(label, context);
-            },
-          ),
         ],
       ),
     );
   }
 
-  Future<void> _showEditConfirmationDialog(String field, BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Edit $field'),
-          content: Text('Do you want to make the $field editable?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  switch (field) {
-                    case 'Name':
-                      _isNameEditable = !_isNameEditable;
-                      break;
-                    case 'Email':
-                      _isEmailEditable = !_isEmailEditable;
-                      break;
-                    case 'Contact':
-                      _isContactEditable = !_isContactEditable;
-                      break;
-                  }
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  Widget _buildUpdateButton() {
+    return ElevatedButton.icon(
+      onPressed: () async {
+        final imgFile = Provider.of<ImagePickerProvider>(context, listen: false)
+            .profileImage;
 
-  void _updateProfile() {
-    setState(() {
-      _isNameEditable = false;
-      _isEmailEditable = false;
-      _isContactEditable = false;
-    });
+        if (imgFile != null) {
+          final message =
+              await Provider.of<UserDataProvider>(context, listen: false)
+                  .updateProfileImage(imgFile);
+          showCustomSnackBar(context, message);
+        } else {
+          showCustomSnackBar(context, "Image not found");
+        }
+
+        _isEditable.updateAll((key, value) => false);
+      },
+      icon: const Icon(Icons.upload_file, color: Colors.white),
+      label: Text('Update Profile',
+          style: textStyle(15, Colors.white, FontWeight.w500)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+      ),
+    );
   }
 }

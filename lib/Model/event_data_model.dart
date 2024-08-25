@@ -32,6 +32,7 @@ class MainEvent {
   final String audienceType;
   final int multiTickets;
   final String currency;
+  final String status;
   final List<String> mainImg;
   final List<String> coverImg;
 
@@ -48,6 +49,7 @@ class MainEvent {
     required this.audienceType,
     required this.multiTickets,
     required this.currency,
+    required this.status,
     required this.mainImg,
     required this.coverImg,
   });
@@ -65,6 +67,7 @@ class MainEvent {
         audienceType: json["audience_type"],
         multiTickets: json["multi_tickets"],
         currency: json["currency"],
+        status: json["status"] ?? 'pending',
         mainImg: List<String>.from(json["main_img"].map((x) => x)),
         coverImg: List<String>.from(json["cover_img"].map((x) => x)),
       );
@@ -82,6 +85,7 @@ class MainEvent {
         "audience_type": audienceType,
         "multi_tickets": multiTickets,
         "currency": currency,
+        "status": "pending",
         "main_img": List<dynamic>.from(mainImg.map((x) => x)),
         "cover_img": List<dynamic>.from(coverImg.map((x) => x)),
       };

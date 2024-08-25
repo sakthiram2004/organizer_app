@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:organizer_app/Model/event_data_model.dart';
+import 'package:organizer_app/Screens/ListEvent/HelperWidget/event_details.dart';
 import 'package:organizer_app/Utils/const_color.dart';
-import 'package:organizer_app/Widget/event_details.dart';
-import 'package:organizer_app/Widget/text_style.dart';
+import 'package:organizer_app/CommonWidgets/text_style.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubeVideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
+  final EventDataModel eventData;
 
-  const YoutubeVideoPlayerWidget({super.key, required this.videoUrl});
+  const YoutubeVideoPlayerWidget(
+      {super.key, required this.videoUrl, required this.eventData});
 
   @override
   _YoutubeVideoPlayerWidgetState createState() =>
@@ -73,10 +75,11 @@ class _YoutubeVideoPlayerWidgetState extends State<YoutubeVideoPlayerWidget> {
               leading: BackButton(
                 onPressed: () {
                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const EventDetailsScreen())); // Navigate back
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            EventDetailsScreen(eventData: widget.eventData)),
+                  ); // Navigate back
                 },
                 color: Colors.black,
               ),

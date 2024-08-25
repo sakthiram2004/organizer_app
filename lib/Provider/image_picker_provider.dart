@@ -7,7 +7,7 @@ import 'package:organizer_app/Utils/image_helper.dart';
 
 class ImagePickerProvider extends ChangeNotifier {
   final List<File> _mainEventCoverImages = [];
-  final List<List<File>> _subEventCoverImages = [[]];
+  List<List<File>> _subEventCoverImages = [[]];
   final List<File?> _images = [];
   PlatformFile? _selectedFile;
 
@@ -155,6 +155,9 @@ class ImagePickerProvider extends ChangeNotifier {
 
   void clearImages() {
     _images.clear();
+    _mainEventImage = null;
+    _mainEventCoverImages.clear();
+    _subEventCoverImages = [[]];
     notifyListeners();
   }
 }

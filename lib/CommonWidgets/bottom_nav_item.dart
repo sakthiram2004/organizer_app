@@ -16,8 +16,8 @@ class BottomNavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        height: 40,
-        width: 40,
+        height: 60,
+        width: 60,
         child: Icon(
           icon,
           color: color,

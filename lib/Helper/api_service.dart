@@ -1,11 +1,19 @@
-class Config {
-  static const baseUrl = 'http://192.168.90.148:3000/api/v1/';
-}
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-const String loginUser = 'organizer/login';
-const String register = 'organizer/signup';
-const String getUserDetail = 'organizer/detail';
-const String getActiveEvents = 'organizer/events/active';
-const String getPendingEvents = 'organizer/events/pending';
-const String getCompletedEvents = 'organizer/events/completed';
-const String getRejectedEvents = 'organizer/events/rejected';
+String get baseUrl => 'http://192.168.142.148:3000/api/v1/';
+String get imageBaseUrl => 'http://192.168.142.148:3000/';
+
+class Config {
+  static const String loginUser = 'organizer/login';
+  static const String register = 'organizer/signup';
+  static const String updateDetail = 'organizer/update/profile';
+  static const String getUserDetail = 'organizer/detail';
+  static const String getActiveEvents = 'organizer/events/active';
+  static const String getPendingEvents = 'organizer/events/pending';
+  static const String getCompletedEvents = 'organizer/events/completed';
+  static const String getRejectedEvents = 'organizer/events/rejected';
+  static const String createEvent = 'event/create';
+  static const String getAllEvents = 'organizer/dashboard/events';
+}

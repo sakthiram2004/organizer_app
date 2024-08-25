@@ -1,15 +1,17 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:organizer_app/Helper/api_service.dart';
 import 'package:organizer_app/PageRouter/page_routes.dart';
 import 'package:organizer_app/Provider/auth_provider.dart';
+import 'package:organizer_app/Provider/event_provider.dart';
 import 'package:organizer_app/Provider/image_picker_provider.dart';
 import 'package:organizer_app/Provider/page_index_provider.dart';
+import 'package:organizer_app/Provider/user_data_provider.dart';
+import 'package:organizer_app/Screens/Auth/HelperWidget/main_page_shimmer.dart';
 import 'package:organizer_app/Utils/const_color.dart';
-import 'package:organizer_app/Widget/text_style.dart';
+import 'package:organizer_app/CommonWidgets/text_style.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +23,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => ImagePickerProvider()),
         ChangeNotifierProvider(create: (_) => PageIndexProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => UserDataProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider()),
       ],
       child: const MyApp(),
     ),
@@ -34,7 +38,6 @@ class MyApp extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await resetToken();
     String? token = prefs.getString("accessToken");
-    print("your token is ++++++++++ $token");
     bool isValidToken = (token != null);
     return isValidToken;
   }
@@ -46,12 +49,12 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const MaterialApp(
-            home: Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
+            debugShowCheckedModeBanner: false,
+            home: MainPageShimmer(),
           );
         } else if (snapshot.hasError) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
                   child: Text(
@@ -100,8 +103,7 @@ Future<void> resetToken() async {
   final token = prefs.getString('accessToken');
 
   try {
-    final response = await http.get(
-        Uri.parse("${Config.baseUrl}$getUserDetail"),
+    final response = await http.get(Uri.parse("$baseUrl{Config.getUserDetail}"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -114,6 +116,6 @@ Future<void> resetToken() async {
       await prefs.remove("accessToken");
     }
   } catch (error) {
-    print(error);
+    throw Exception(error);
   }
 }

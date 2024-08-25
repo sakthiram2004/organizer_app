@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:organizer_app/Helper/api_service.dart';
+import 'package:organizer_app/Provider/event_provider.dart';
+import 'package:organizer_app/Screens/ListEvent/HelperWidget/event_details.dart';
 import 'package:organizer_app/Utils/const_color.dart';
-import 'package:organizer_app/Widget/text_style.dart';
+import 'package:organizer_app/CommonWidgets/text_style.dart';
+import 'package:organizer_app/Utils/format_data.dart';
+import 'package:organizer_app/Utils/not_found.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -11,42 +17,21 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _allItems = [
-    'Music Event 1',
-    'Music Event 2',
-    'Music Event 3',
-    'Science Event 1',
-    'Science Event 2',
-    'Science Event 3',
-  ];
-
-  List<String> _filteredItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredItems = _allItems;
-    _searchController.addListener(_filterItems);
-  }
 
   @override
   void dispose() {
-    _searchController.removeListener(_filterItems);
     _searchController.dispose();
     super.dispose();
   }
 
   void _filterItems() {
     String query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredItems = _allItems
-          .where((item) => item.toLowerCase().contains(query))
-          .toList();
-    });
+    Provider.of<EventProvider>(context, listen: false).searchEvent(query);
   }
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<EventProvider>(context).searchEvent('');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -62,6 +47,7 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
+              onChanged: (value) => _filterItems(),
               decoration: InputDecoration(
                 hintText: 'Search...',
                 border: OutlineInputBorder(
@@ -73,128 +59,151 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _filteredItems.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: 150,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomLeft: Radius.circular(10),
+            child: Consumer<EventProvider>(
+              builder: (context, searchEventProvider, child) {
+                _filterItems();
+                if (searchEventProvider.filteredEvents.isEmpty) {
+                  return const NotFound();
+                }
+
+                return ListView.builder(
+                  itemCount: searchEventProvider.filteredEvents.length,
+                  itemBuilder: (context, index) {
+                    final eventData = searchEventProvider.filteredEvents[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
                           ),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                "https://tse2.mm.bing.net/th?id=OIP.cTL2SWZTmIRSnIU13VT-4AHaEa&pid=Api&P=0&h=180"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        ],
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  "${imageBaseUrl}ev_main_img/${eventData.mainEvent.mainImg.first}",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Music Event",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 16,
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              const Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(
-                                    Icons.date_range,
-                                    color: Colors.purple,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 5),
                                   Text(
-                                    "2024-08-17",
-                                    style: TextStyle(
-                                      color: Colors.purple,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.location_on,
-                                    color: Colors.black,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Text(
-                                    "New York",
-                                    style: TextStyle(
+                                    eventData.mainEvent.name,
+                                    style: const TextStyle(
                                       color: Colors.black,
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 16,
                                     ),
                                   ),
-                                  const Spacer(),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    height: 30,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          const Color.fromARGB(255, 4, 40, 147),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: const Center(
-                                        child: Text(
-                                          'View',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.date_range,
+                                        color: Colors.purple,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        formatTimeStamp(eventData
+                                            .mainEvent.regStart
+                                            .toString()),
+                                        style: const TextStyle(
+                                          color: Colors.purple,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                    ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on,
+                                        color: Colors.black,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        eventData.mainEvent.location,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 5),
+                                        height: 30,
+                                        width: 50,
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 4, 40, 147),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EventDetailsScreen(
+                                                          eventData: eventData,
+                                                        )));
+                                          },
+                                          child: const Center(
+                                            child: Text(
+                                              'View',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             ),

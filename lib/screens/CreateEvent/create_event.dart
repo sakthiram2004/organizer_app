@@ -1,12 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:organizer_app/Provider/event_provider.dart';
 import 'package:organizer_app/Provider/image_picker_provider.dart';
+import 'package:organizer_app/Screens/CreateEvent/HelperWidget/curved_text_field.dart';
+import 'package:organizer_app/Screens/CreateEvent/HelperWidget/dropdown_menu.dart';
 import 'package:organizer_app/Utils/const_color.dart';
+import 'package:organizer_app/Utils/loader.dart';
+import 'package:organizer_app/Utils/scaffold_messenger.dart';
 import 'package:provider/provider.dart';
 
 class CreateEvent extends StatefulWidget {
-  const CreateEvent({super.key});
+  final PageController pageController;
+
+  const CreateEvent({super.key, required this.pageController});
 
   @override
   State<CreateEvent> createState() => _CreateEventState();
@@ -15,7 +21,6 @@ class CreateEvent extends StatefulWidget {
 class _CreateEventState extends State<CreateEvent> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for main event details
   TextEditingController nameController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -29,9 +34,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   bool multiTickets = false;
   List<String> tags = [];
-  List<dynamic> subEventsImages = [];
 
-  // List of sub-event controllers
   List<Map<String, TextEditingController>> subEventControllers = [];
 
   @override
@@ -102,7 +105,6 @@ class _CreateEventState extends State<CreateEvent> {
 
   @override
   Widget build(BuildContext context) {
-    final imagePickerProvider = Provider.of<ImagePickerProvider>(context);
     return Scaffold(
       backgroundColor: tertiaryColor,
       appBar: AppBar(
@@ -113,23 +115,27 @@ class _CreateEventState extends State<CreateEvent> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         )),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildMainEventDetails(imagePickerProvider),
-                const SizedBox(height: 16),
-                _buildSubEvents(imagePickerProvider),
-                const SizedBox(height: 16),
-                _buildSubmitButton(),
-              ],
+      body: Consumer<ImagePickerProvider>(
+        builder: (context, imagePickerProvider, child) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildMainEventDetails(imagePickerProvider),
+                    const SizedBox(height: 16),
+                    _buildSubEvents(imagePickerProvider),
+                    const SizedBox(height: 16),
+                    _buildSubmitButton(),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -151,43 +157,123 @@ class _CreateEventState extends State<CreateEvent> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _buildCurvedTextField(nameController, 'Event Name'),
-            _buildCurvedTextField(locationController, 'Location'),
-            _buildCurvedTextField(descriptionController, 'Description',
+            CurvedTextField(controller: nameController, hint: 'Event Name'),
+            CustomDropDownMenu(
+                controller: locationController,
+                onChanged: (value) {
+                  locationController.text = value!;
+                },
+                hint: "Distric",
+                items: const [
+                  'Chennai',
+                  'Coimbatore',
+                  'Cuddalore',
+                  'Dharmapuri',
+                  'Dindigul',
+                  'Erode',
+                  'Kanchipuram',
+                  'Kanyakumari',
+                  'Karur',
+                  'Krishnagiri',
+                  'Madurai',
+                  'Nagapattinam',
+                  'Namakkal',
+                  'Nilgiris',
+                  'Perambalur',
+                  'Pudukkottai',
+                  'Ramanathapuram',
+                  'Salem',
+                  'Sivagangai',
+                  'Thanjavur',
+                  'Theni',
+                  'Thiruvallur',
+                  'Thiruvarur',
+                  'Tiruchirappalli',
+                  'Tirunelveli',
+                  'Tiruppur',
+                  'Vellore',
+                  'Villupuram',
+                  'Virudhunagar',
+                ]),
+            CurvedTextField(
+                controller: descriptionController,
+                hint: 'Description',
                 maxLines: 3),
-            _buildCurvedDropdown(categoryController, 'Category', [
-              'Symposium',
-              'Workshop',
-              'Conference',
-              'Seminar',
-              'Webinar',
-              'Hackathon',
-              'Meetup',
-              'Networking Event',
-              'Panel Discussion',
-              'Exhibition',
-              'Trade Show',
-              'Lecture',
-              'Round Table',
-              'Training Session',
-              'Bootcamp',
-              'Product Launch',
-              'Fundraiser',
-              'Award Ceremony',
-              'Cultural Event',
-              'Sports Event'
-            ]),
-            _buildCurvedTextField(audienceTypeController, 'Audience Type'),
+            CustomDropDownMenu(
+                controller: categoryController,
+                onChanged: (value) {
+                  setState(() {
+                    categoryController.text = value ?? '';
+                  });
+                },
+                hint: 'Category',
+                items: const [
+                  'Symposium',
+                  'Workshop',
+                  'Conference',
+                  'Seminar',
+                  'Webinar',
+                  'Hackathon',
+                  'Meetup',
+                  'Networking Event',
+                  'Panel Discussion',
+                  'Exhibition',
+                  'Trade Show',
+                  'Lecture',
+                  'Round Table',
+                  'Training Session',
+                  'Bootcamp',
+                  'Product Launch',
+                  'Fundraiser',
+                  'Award Ceremony',
+                  'Cultural Event',
+                  'Sports Event'
+                ]),
+            CustomDropDownMenu(
+                controller: audienceTypeController,
+                onChanged: (value) {
+                  audienceTypeController.text = value!;
+                },
+                hint: 'Audience Type',
+                items: const [
+                  'General Public',
+                  'Students',
+                  'Professionals',
+                  'Academics',
+                  'Families',
+                  'Corporates',
+                  'Teens',
+                  'Seniors',
+                  'Artists',
+                  'Entrepreneurs',
+                  'Tech Enthusiasts',
+                  'Health and Wellness',
+                  'Music Lovers',
+                  'Sports Fans',
+                  'Book Readers',
+                  'Travelers',
+                  'Foodies',
+                  'Gamers',
+                  'Community Leaders',
+                  'Non-profit Organizations',
+                ]),
             CheckboxListTile(
               title: const Text('Allow Multi Tickets'),
               value: multiTickets,
               onChanged: (value) => setState(() => multiTickets = value!),
             ),
-            _buildCurvedDropdown(currencyController, 'Currency',
-                ['INR', 'USD', 'EUR', 'JPY', 'MXN']),
-            _buildCurvedTextField(
-              TextEditingController(text: tags.join(', ')),
-              'Tags (comma separated)',
+            CustomDropDownMenu(
+                controller: currencyController,
+                onChanged: (value) {
+                  setState(() {
+                    currencyController.text = value ?? '';
+                  });
+                },
+                hint: 'Currency',
+                items: const ['INR', 'USD', 'EUR', 'JPY', 'MXN']),
+            CurvedTextField(
+              controller: TextEditingController(text: tags.join(', ')),
+              hint: 'Tags (comma separated)',
               onChanged: (value) =>
                   tags = value.split(',').map((tag) => tag.trim()).toList(),
             ),
@@ -212,15 +298,15 @@ class _CreateEventState extends State<CreateEvent> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        _buildCurvedTextField(
-          regStartDateController,
-          'Start Date',
+        CurvedTextField(
+          controller: regStartDateController,
+          hint: 'Start Date',
           readOnly: true,
           onTap: () => _selectDate(context, 0, isStartDate: true),
         ),
-        _buildCurvedTextField(
-          regEndDateController,
-          'End Date',
+        CurvedTextField(
+          controller: regEndDateController,
+          hint: 'End Date',
           readOnly: true,
           onTap: () => _selectDate(context, 0, isEndDate: true),
         ),
@@ -237,9 +323,13 @@ class _CreateEventState extends State<CreateEvent> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        _buildCurvedTextField(latitudeController, 'Latitude',
+        CurvedTextField(
+            controller: latitudeController,
+            hint: 'Latitude',
             keyboardType: TextInputType.number),
-        _buildCurvedTextField(longitudeController, 'Longitude',
+        CurvedTextField(
+            controller: longitudeController,
+            hint: 'Longitude',
             keyboardType: TextInputType.number),
       ],
     );
@@ -300,7 +390,7 @@ class _CreateEventState extends State<CreateEvent> {
             ),
           ),
         const SizedBox(height: 16),
-        // Display cover images if picked
+        //<----------- Display cover images if picked-------->
         const Text('Cover Images'),
         const SizedBox(height: 8),
         Wrap(spacing: 10.0, runSpacing: 10.0, children: [
@@ -387,59 +477,131 @@ class _CreateEventState extends State<CreateEvent> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildCurvedTextField(
-                        subEventControllers[index]['name']!, 'Sub-event Name'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['description']!,
-                        'Sub-event Description',
+                    CurvedTextField(
+                        controller: subEventControllers[index]['name']!,
+                        hint: 'Sub-event Name'),
+                    CurvedTextField(
+                        controller: subEventControllers[index]['description']!,
+                        hint: 'Sub-event Description',
                         maxLines: 3),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['video_url']!, 'Video URL'),
-                    _buildCurvedTextField(
-                      subEventControllers[index]['start_date']!,
-                      'Start Date',
+                    CurvedTextField(
+                        controller: subEventControllers[index]['video_url']!,
+                        hint: 'Video URL'),
+                    CurvedTextField(
+                      controller: subEventControllers[index]['start_date']!,
+                      hint: 'Start Date',
                       readOnly: true,
                       onTap: () => _selectDate(context, index),
                     ),
-                    _buildCurvedTextField(
-                      subEventControllers[index]['start_time']!,
-                      'Start Time',
+                    CurvedTextField(
+                      controller: subEventControllers[index]['start_time']!,
+                      hint: 'Start Time',
                       readOnly: true,
                       onTap: () => _selectTime(context, index, 'start_time'),
                     ),
-                    _buildCurvedTextField(
-                      subEventControllers[index]['end_time']!,
-                      'End Time',
+                    CurvedTextField(
+                      controller: subEventControllers[index]['end_time']!,
+                      hint: 'End Time',
                       readOnly: true,
                       onTap: () => _selectTime(context, index, 'end_time'),
                     ),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['host_name']!, 'Host Name'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['country_code']!,
-                        'Country Code'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['host_mobile']!,
-                        'Host Mobile'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['host_email']!,
-                        'Host Email'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['ticket_type']!,
-                        'Ticket Type'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['ticket_price']!,
-                        'Ticket Price'),
-                    _buildCurvedTextField(
-                        subEventControllers[index]['ticket_qty']!,
-                        'Ticket Quantity'),
+                    CurvedTextField(
+                        controller: subEventControllers[index]['host_name']!,
+                        hint: 'Host Name'),
+                    CurvedTextField(
+                        controller: subEventControllers[index]['country_code']!,
+                        keyboardType: TextInputType.number,
+                        hint: 'Country Code'),
+                    CurvedTextField(
+                        controller: subEventControllers[index]['host_mobile']!,
+                        keyboardType: TextInputType.number,
+                        hint: 'Host Mobile'),
+                    TextFormField(
+                      controller: subEventControllers[index]['host_email']!,
+                      cursorColor: Colors.black,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                            .hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Host Email',
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: screenWidth * 0.04,
+                          fontFamily: "verdana_regular",
+                          fontWeight: FontWeight.w400,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide:
+                              const BorderSide(color: Colors.black, width: 1.0),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 1.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    // CurvedTextField(
+                    //     controller: subEventControllers[index]['host_email']!,
+                    //     hint: 'Host Email'),
+                    CustomDropDownMenu(
+                        controller: subEventControllers[index]['ticket_type']!,
+                        onChanged: (value) {
+                          subEventControllers[index]['ticket_type']!.text =
+                              value!;
+                        },
+                        hint: 'Ticket Type',
+                        items: const [
+                          'General Admission',
+                          'VIP',
+                          'Early Bird',
+                          'Student',
+                          'Senior Citizen',
+                          'Group Discount',
+                          'Standard',
+                          'Premium',
+                          'Reserved Seating',
+                          'Press Pass',
+                        ]),
+                    // CurvedTextField(
+                    //     controller: subEventControllers[index]['ticket_type']!,
+                    //     hint: 'Ticket Type'),
+                    CurvedTextField(
+                        controller: subEventControllers[index]['ticket_price']!,
+                        hint: 'Ticket Price',
+                        keyboardType: TextInputType.number),
+
+                    CurvedTextField(
+                        controller: subEventControllers[index]['ticket_qty']!,
+                        keyboardType: TextInputType.number,
+                        hint: 'Ticket Quantity'),
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Display cover images if picked
                           const Text('Cover Images'),
                           const SizedBox(height: 8),
-                          (provider.subEventCoverImages[index].isNotEmpty)
+                          (provider.subEventCoverImages.isNotEmpty &&
+                                  provider
+                                      .subEventCoverImages[index].isNotEmpty)
                               ? Wrap(
                                   spacing: 10.0,
                                   runSpacing: 10.0,
@@ -601,104 +763,101 @@ class _CreateEventState extends State<CreateEvent> {
     ]);
   }
 
-  Widget _buildCurvedTextField(
-    TextEditingController controller,
-    String hint, {
-    int? maxLines,
-    bool readOnly = false,
-    void Function()? onTap,
-    TextInputType keyboardType = TextInputType.text,
-    void Function(String)? onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: TextFormField(
-        controller: controller,
-        maxLines: maxLines ?? 1,
-        readOnly: readOnly,
-        onTap: onTap,
-        keyboardType: keyboardType,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
-          hintText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey.shade400),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCurvedDropdown(
-    TextEditingController controller,
-    String hint,
-    List<String> items,
-  ) {
-    return ButtonTheme(
-      alignedDropdown: true,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: DropdownButtonFormField<String>(
-          value: controller.text.isEmpty ? null : controller.text,
-          items: items.map((item) {
-            return DropdownMenuItem(
-              alignment: AlignmentDirectional.center,
-              value: item,
-              child: Text(item),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              controller.text = value ?? '';
-            });
-          },
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-            hintText: hint,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Theme.of(context).primaryColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade400),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildSubmitButton() {
-    final mediaQuery = MediaQuery.of(context);
-    final screenWidth = mediaQuery.size.width;
-    final screenHeight = mediaQuery.size.height;
     return Center(
         child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF46BCC3),
-        minimumSize: Size(screenWidth * 1, screenHeight * 0.07),
+        minimumSize: Size(MediaQuery.of(context).size.width * 1,
+            MediaQuery.of(context).size.height * 0.07),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      onPressed: () {
+      onPressed: () async {
         if (_formKey.currentState?.validate() ?? false) {
-          // Handle form submission
+//<------- showing alert dialogue when bacground is  process  --------------->
+          await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return const Loader();
+              });
+//<------- bacground process --------------->
+          final mainEventData = {
+            'name': nameController.text,
+            'location': locationController.text,
+            'description': descriptionController.text,
+            'category': categoryController.text,
+            'audienceType': audienceTypeController.text,
+            'multiTickets': multiTickets,
+            'currency': currencyController.text,
+            'tags': tags,
+            'regStartDate': regStartDateController.text,
+            'regEndDate': regEndDateController.text,
+            'latitude': latitudeController.text,
+            'longitude': longitudeController.text,
+          };
+
+          final subEventsData = subEventControllers.map((subEvent) {
+            return {
+              'name': subEvent['name']!.text,
+              'description': subEvent['description']!.text,
+              'video_url': subEvent['video_url']!.text,
+              'start_date': subEvent['start_date']!.text,
+              'start_time': subEvent['start_time']!.text,
+              'end_time': subEvent['end_time']!.text,
+              'host_name': subEvent['host_name']!.text,
+              'country_code': subEvent['country_code']!.text,
+              'host_mobile': subEvent['host_mobile']!.text,
+              'host_email': subEvent['host_email']!.text,
+              'ticket_type': subEvent['ticket_type']!.text,
+              'ticket_price': subEvent['ticket_price']!.text,
+              'ticket_qty': subEvent['ticket_qty']!.text,
+            };
+          }).toList();
+          try {
+            final imagePickerProvider = context.read<ImagePickerProvider>();
+            final eventProvider = context.read<EventProvider>();
+
+            if (imagePickerProvider.mainEventImage != null) {
+              final message = await eventProvider.submitEvent(
+                imagePickerProvider.mainEventImage!,
+                imagePickerProvider.mainEventCoverImages,
+                imagePickerProvider.subEventCoverImages,
+                mainEventData,
+                subEventsData,
+              );
+
+              List<String> errorMessages = [
+                "Upload required files",
+                "Enter all fields",
+                "Enter all fields",
+                "Internal server error",
+              ];
+
+              if (message == "Events and sub events uploaded") {
+                if (context.mounted) {
+                  showCustomSnackBar(context, message);
+                  imagePickerProvider.clearImages();
+                }
+              } else if (errorMessages.contains(message)) {
+                if (context.mounted) {
+                  showCustomSnackBar(context, message);
+                  widget.pageController.jumpToPage(3);
+                }
+              }
+            } else {
+              if (context.mounted) {
+                showCustomSnackBar(context, "Please select an image.");
+              }
+            }
+          } catch (e) {
+            if (context.mounted) {
+              showCustomSnackBar(
+                  context, "An error occurred. Please try again.");
+            }
+          }
         }
       },
       child: const Text(

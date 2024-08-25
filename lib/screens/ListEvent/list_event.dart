@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:organizer_app/Provider/event_provider.dart';
 import 'package:organizer_app/Utils/const_color.dart';
 import 'package:organizer_app/Utils/height_width.dart';
-import 'package:organizer_app/Screens/ListEvent/tab_view.dart';
-import '../../Widget/text_style.dart';
+import 'package:organizer_app/Screens/ListEvent/HelperWidget/tab_view.dart';
+import 'package:provider/provider.dart';
+import '../../CommonWidgets/text_style.dart';
 
 class ListEvent extends StatefulWidget {
   const ListEvent({super.key});
@@ -18,6 +20,7 @@ class _ListEventState extends State<ListEvent>
   @override
   void initState() {
     super.initState();
+    fetchEvents();
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -25,6 +28,12 @@ class _ListEventState extends State<ListEvent>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void fetchEvents() {
+    Provider.of<EventProvider>(listen: false, context).getActiveEvents();
+    Provider.of<EventProvider>(listen: false, context).getPendingEvents();
+    Provider.of<EventProvider>(listen: false, context).getRejectedEvents();
   }
 
   @override
@@ -49,18 +58,22 @@ class _ListEventState extends State<ListEvent>
               tabs: const [
                 Tab(text: "Active"),
                 Tab(text: "Pending"),
-                Tab(text: "Complete"),
+                Tab(text: "Rejected"),
               ],
             ),
           ),
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: const [
-                TabView(),
-                TabView(),
-                TabView(),
-              ],
+            child: Consumer<EventProvider>(
+              builder: (context, eventDataProvider, child) {
+                return TabBarView(
+                  controller: _tabController,
+                  children: [
+                    TabView(event: eventDataProvider.activeEvents),
+                    TabView(event: eventDataProvider.pendingEvents),
+                    TabView(event: eventDataProvider.rejectedEvents),
+                  ],
+                );
+              },
             ),
           ),
         ],
