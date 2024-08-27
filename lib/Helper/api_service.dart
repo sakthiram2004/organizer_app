@@ -1,6 +1,5 @@
-
-String get baseUrl => 'http://192.168.142.148:3000/api/v1/';
-String get imageBaseUrl => 'http://192.168.142.148:3000/';
+String get baseUrl => 'https://event-backend-0000.onrender.com/api/v1/';
+String get imageBaseUrl => 'https://event-backend-0000.onrender.com/';
 
 class Config {
   static const String loginUser = 'organizer/login';
@@ -13,4 +12,5 @@ class Config {
   static const String getRejectedEvents = 'organizer/events/rejected';
   static const String createEvent = 'event/create';
   static const String getAllEvents = 'organizer/dashboard/events';
+  static const String getDashboardData = 'organizer/dashboard';
 }

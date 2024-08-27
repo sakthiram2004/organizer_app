@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:organizer_app/Helper/api_service.dart';
 import 'package:organizer_app/Model/user_model.dart';
@@ -198,30 +197,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove("accessToken");
-              if (context.mounted) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "logout successfully",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Color.fromARGB(255, 235, 26, 61),
-                        duration: Duration(seconds: 1),
-                      ),
-                    )
-                    .closed
-                    .then((_) {
-                  if (context.mounted) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                      (route) => false,
-                    );
-                  }
-                });
-              }
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
             },
             child: const Text("Yes",
                 style: TextStyle(

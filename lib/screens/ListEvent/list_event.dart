@@ -22,6 +22,7 @@ class _ListEventState extends State<ListEvent>
     super.initState();
     fetchEvents();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.animateTo(1);
   }
 
   @override
@@ -31,8 +32,8 @@ class _ListEventState extends State<ListEvent>
   }
 
   void fetchEvents() {
-    Provider.of<EventProvider>(listen: false, context).getActiveEvents();
     Provider.of<EventProvider>(listen: false, context).getPendingEvents();
+    Provider.of<EventProvider>(listen: false, context).getActiveEvents();
     Provider.of<EventProvider>(listen: false, context).getRejectedEvents();
   }
 

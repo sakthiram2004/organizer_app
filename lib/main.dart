@@ -9,7 +9,7 @@ import 'package:organizer_app/Provider/event_provider.dart';
 import 'package:organizer_app/Provider/image_picker_provider.dart';
 import 'package:organizer_app/Provider/page_index_provider.dart';
 import 'package:organizer_app/Provider/user_data_provider.dart';
-import 'package:organizer_app/Screens/Auth/HelperWidget/main_page_shimmer.dart';
+import 'package:organizer_app/CommonWidgets/main_page_shimmer.dart';
 import 'package:organizer_app/Utils/const_color.dart';
 import 'package:organizer_app/CommonWidgets/text_style.dart';
 import 'package:provider/provider.dart';
@@ -57,9 +57,21 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
-                  child: Text(
-                'Something went wrong.... ${snapshot.error}',
-                style: textStyle(25, primaryColor, FontWeight.bold),
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, color: Colors.red),
+                  Text(
+                    'Something went wrong.',
+                    style: textStyle(25, primaryColor, FontWeight.bold),
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        checkToken();
+                      },
+                      child: const Text("Retry"))
+                ],
               )),
             ),
           );
@@ -103,7 +115,8 @@ Future<void> resetToken() async {
   final token = prefs.getString('accessToken');
 
   try {
-    final response = await http.get(Uri.parse("$baseUrl{Config.getUserDetail}"),
+    final response = await http.get(
+        Uri.parse("$baseUrl${Config.getUserDetail}"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -116,6 +129,6 @@ Future<void> resetToken() async {
       await prefs.remove("accessToken");
     }
   } catch (error) {
-    throw Exception(error);
+    return;
   }
 }

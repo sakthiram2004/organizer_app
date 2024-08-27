@@ -12,12 +12,14 @@ class EventProvider extends ChangeNotifier {
   List<EventDataModel> _rejectedEvents = [];
   List<EventDataModel> _filteredEvents = [];
   List<EventDataModel> _allEvents = [];
+  Map<String, dynamic> _dashboardData = {};
 
   List<EventDataModel> get activeEvents => _activeEvents;
   List<EventDataModel> get pendingEvents => _pendingEvents;
   List<EventDataModel> get rejectedEvents => _rejectedEvents;
   List<EventDataModel> get filteredEvents => _filteredEvents;
   List<EventDataModel> get allEvents => _allEvents;
+  Map<String, dynamic> get dashboardData => _dashboardData;
 
   Future<String> submitEvent(
     File mainImage,
@@ -241,16 +243,38 @@ class EventProvider extends ChangeNotifier {
           (responseData["data"] ?? []).map((x) => EventDataModel.fromJson(x)),
         );
       } else {
-        // "Search failed with status: ${response.statusCode}";
         _filteredEvents = [];
       }
     } catch (e) {
-      //"Error during search: $e";
       _filteredEvents = [];
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });
+  }
+
+  Future<void> getDashboardData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("accessToken")!;
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl${Config.getDashboardData}"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print(responseData["message"]);
+      if (response.statusCode == 200) {
+        _dashboardData = responseData["data"];
+        notifyListeners();
+      }
+    } catch (e) {
+      _dashboardData = {};
+    }
+    notifyListeners();
   }
 }

@@ -23,7 +23,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> signUp(Map<String, dynamic> formData, List<dynamic> imagePaths,
+  Future<String> signUp(Map<String, dynamic> formData, List<dynamic> imagePaths,
       String? fileData) async {
     isLoading = true;
     errorMessage = null;
@@ -53,11 +53,12 @@ class AuthProvider with ChangeNotifier {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
         Get.offAllNamed(PageRoutes.mainScreen);
+        return 'sign up success';
       } else {
-        throw Exception('Failed to sign up');
+        return 'Failed to sign up';
       }
     } catch (e) {
-      errorMessage = e.toString();
+      return "internal server error";
     } finally {
       isLoading = false;
     }

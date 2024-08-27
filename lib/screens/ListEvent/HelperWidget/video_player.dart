@@ -50,7 +50,7 @@ class _YoutubeVideoPlayerWidgetState extends State<YoutubeVideoPlayerWidget> {
     return SafeArea(
       child: YoutubePlayerBuilder(
         player: YoutubePlayer(
-          aspectRatio: 16 / 9, // Adjust aspect ratio to fit your design
+          aspectRatio: 16 / 9,
           bufferIndicator: const CircularProgressIndicator(
             color: Colors.red,
           ),
@@ -64,8 +64,9 @@ class _YoutubeVideoPlayerWidgetState extends State<YoutubeVideoPlayerWidget> {
         ),
         builder: (context, player) {
           return Scaffold(
-            backgroundColor: tertiaryColor,
+            backgroundColor: Colors.white,
             appBar: AppBar(
+              iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: primaryColor,
               elevation: 0,
               title: Text(

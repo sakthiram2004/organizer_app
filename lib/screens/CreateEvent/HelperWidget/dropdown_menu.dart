@@ -6,12 +6,14 @@ class CustomDropDownMenu extends StatelessWidget {
       required this.controller,
       required this.onChanged,
       required this.hint,
-      required this.items});
+      required this.items,
+      this.validator});
 
   final TextEditingController controller;
   final String hint;
   final List<String> items;
   final void Function(String?)? onChanged;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,7 @@ class CustomDropDownMenu extends StatelessWidget {
               borderSide: BorderSide(color: Colors.grey.shade400),
             ),
           ),
+          validator: validator,
         ),
       ),
     );

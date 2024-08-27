@@ -9,7 +9,8 @@ class CurvedTextField extends StatelessWidget {
       this.maxLines,
       this.readOnly,
       this.onTap,
-      this.onChanged});
+      this.onChanged,
+      this.validator});
 
   final TextEditingController controller;
   final String hint;
@@ -18,6 +19,7 @@ class CurvedTextField extends StatelessWidget {
   final void Function()? onTap;
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class CurvedTextField extends StatelessWidget {
             borderSide: BorderSide(color: Colors.grey.shade400),
           ),
         ),
+        validator: validator,
       ),
     );
   }

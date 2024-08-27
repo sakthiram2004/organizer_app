@@ -46,7 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
         "user not found",
         "invalid password",
         "Login failed",
-        "Organizer not found"
+        "Organizer not found",
+        "Organizer approval is pending or the organizer has been rejected"
       ];
 
       if (message == "login successfully") {
@@ -72,10 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             }
           });
-        } else if (errorMessages.contains(message)) {
-          if (context.mounted) {
-            showCustomSnackBar(context, message, isError: true);
-          }
+        }
+      } else if (errorMessages.contains(message)) {
+        if (context.mounted) {
+          showCustomSnackBar(context, message, isError: true);
         }
       }
     }

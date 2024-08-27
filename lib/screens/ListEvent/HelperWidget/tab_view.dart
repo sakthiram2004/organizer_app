@@ -24,7 +24,7 @@ class _TabViewState extends State<TabView> {
             child: SingleChildScrollView(
               child: LayoutGrid(
                 columnSizes: width > 600 ? [1.fr, 1.fr, 1.fr] : [1.fr, 1.fr],
-                rowSizes: List.generate(4, (_) => auto),
+                rowSizes: List.generate(widget.event.length, (_) => auto), //4
                 columnGap: 12,
                 rowGap: 8,
                 children: List.generate(widget.event.length, (index) {
@@ -70,6 +70,7 @@ class _TabViewState extends State<TabView> {
                                   fontWeight: FontWeight.w800,
                                   fontSize: 16,
                                 ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 8),
                               Row(

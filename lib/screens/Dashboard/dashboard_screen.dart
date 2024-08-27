@@ -19,11 +19,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     Future.microtask(() {
       Provider.of<EventProvider>(context, listen: false).getAllEvents();
+      Provider.of<UserDataProvider>(context, listen: false).fetchUserData();
+      Provider.of<EventProvider>(context, listen: false).getDashboardData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<EventProvider>(context, listen: false).getDashboardData();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,20 +49,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildSummaryCard("Pending Events", "12", Colors.orange),
-                _buildSummaryCard("Completed Events", "8", Colors.green),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildSummaryCard("Booked Count", "120", Colors.purple),
-                _buildSummaryCard("Active Events", "5", Colors.blueAccent),
-              ],
+            Consumer<EventProvider>(
+              builder: (context, eventDataProvider, child) {
+                Map<String, dynamic> dashboardData =
+                    eventDataProvider.dashboardData;
+                if (eventDataProvider.dashboardData.isEmpty) {
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildSummaryCard(
+                              "Pending Events", "0", Colors.orange),
+                          _buildSummaryCard(
+                              "Completed Events", "0", Colors.green),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildSummaryCard("Booked Count", "0", Colors.purple),
+                          _buildSummaryCard(
+                              "Active Events", "0", Colors.blueAccent),
+                        ],
+                      ),
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildSummaryCard(
+                              "Pending Events",
+                              "${dashboardData["pendingEventsCount"]}",
+                              Colors.orange),
+                          _buildSummaryCard(
+                              "Completed Events",
+                              "${dashboardData["completedEventsCount"]}",
+                              Colors.green),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildSummaryCard("Booked Count",
+                              "${dashboardData["bookedCount"]}", Colors.purple),
+                          _buildSummaryCard(
+                              "Active Events",
+                              "${dashboardData["activeEventsCount"]}",
+                              Colors.blueAccent),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
             const SizedBox(height: 20),
             const Text(

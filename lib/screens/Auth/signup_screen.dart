@@ -9,6 +9,7 @@ import 'package:organizer_app/Screens/Auth/HelperWidget/custom_text_field.dart';
 import 'package:organizer_app/Screens/Auth/HelperWidget/document_picker.dart';
 import 'package:organizer_app/Screens/Auth/HelperWidget/image_picker.dart';
 import 'package:organizer_app/Utils/const_color.dart';
+import 'package:organizer_app/Utils/scaffold_messenger.dart';
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -81,7 +82,12 @@ class _SignupScreenState extends State<SignupScreen> {
             filePickerProvider.images.map((e) => e?.path).toList();
         final fileData = filePickerProvider.selectedFile?.path;
 
-        authProvider.signUp(formData, imagePaths, fileData);
+        final message =
+            await authProvider.signUp(formData, imagePaths, fileData);
+
+        if (context.mounted) {
+          showCustomSnackBar(context, message);
+        }
       }
     }
 

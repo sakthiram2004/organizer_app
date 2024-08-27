@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:organizer_app/Helper/api_service.dart';
+import 'package:organizer_app/Model/event_data_model.dart';
 import 'package:organizer_app/Provider/event_provider.dart';
 import 'package:organizer_app/Screens/ListEvent/HelperWidget/event_details.dart';
 import 'package:organizer_app/Utils/const_color.dart';
@@ -17,6 +18,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  List<EventDataModel> _filteredEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<EventProvider>(context, listen: false).getAllEvents();
+    _filteredEvents = context.read<EventProvider>().allEvents;
+  }
 
   @override
   void dispose() {
@@ -25,13 +34,27 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _filterItems() {
-    String query = _searchController.text.toLowerCase();
-    Provider.of<EventProvider>(context, listen: false).searchEvent(query);
+    String query = _searchController.text;
+    List<EventDataModel> result = [];
+
+    if (query.isEmpty) {
+      result = context.read<EventProvider>().allEvents;
+    } else {
+      result = context
+          .read<EventProvider>()
+          .allEvents
+          .where((event) =>
+              event.mainEvent.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      _filteredEvents = result;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<EventProvider>(context).searchEvent('');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -61,15 +84,13 @@ class _SearchScreenState extends State<SearchScreen> {
           Expanded(
             child: Consumer<EventProvider>(
               builder: (context, searchEventProvider, child) {
-                _filterItems();
-                if (searchEventProvider.filteredEvents.isEmpty) {
+                if (_filteredEvents.isEmpty) {
                   return const NotFound();
                 }
-
                 return ListView.builder(
-                  itemCount: searchEventProvider.filteredEvents.length,
+                  itemCount: _filteredEvents.length,
                   itemBuilder: (context, index) {
-                    final eventData = searchEventProvider.filteredEvents[index];
+                    final eventData = _filteredEvents[index];
                     return Container(
                       margin: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 5),
